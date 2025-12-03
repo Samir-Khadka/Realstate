@@ -10,7 +10,7 @@ function showToast(message, type = 'info', title = '') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
     toast.className = `toast ${type} fade-in`;
-    
+
     const toastContent = `
         <div class="toast-content">
             ${title ? `<div class="toast-title">${title}</div>` : ''}
@@ -18,10 +18,10 @@ function showToast(message, type = 'info', title = '') {
         </div>
         <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
     `;
-    
+
     toast.innerHTML = toastContent;
     container.appendChild(toast);
-    
+
     // Auto-remove after 5 seconds
     setTimeout(() => {
         if (toast.parentElement) {
@@ -48,7 +48,7 @@ function formatDate(dateString) {
     const now = new Date();
     const diffTime = Math.abs(now - date);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return 'Today';
     if (diffDays === 1) return 'Yesterday';
     if (diffDays < 7) return `${diffDays} days ago`;
@@ -91,21 +91,21 @@ function showFieldError(fieldId, message) {
     const field = document.getElementById(fieldId);
     if (field) {
         field.classList.add('error');
-        
+
         // Remove existing error message
         const existingError = field.parentElement.querySelector('.form-error');
         if (existingError) {
             existingError.remove();
         }
-        
+
         // Add new error message
         const errorDiv = document.createElement('div');
         errorDiv.className = 'form-error';
         errorDiv.innerHTML = `⚠️ ${message}`;
         field.parentElement.appendChild(errorDiv);
-        
+
         // Remove error on input
-        field.addEventListener('input', function() {
+        field.addEventListener('input', function () {
             this.classList.remove('error');
             const error = this.parentElement.querySelector('.form-error');
             if (error) error.remove();
@@ -119,7 +119,7 @@ function clearFormErrors(formId) {
     if (form) {
         const errorFields = form.querySelectorAll('.error');
         errorFields.forEach(field => field.classList.remove('error'));
-        
+
         const errorMessages = form.querySelectorAll('.form-error');
         errorMessages.forEach(msg => msg.remove());
     }
@@ -137,9 +137,16 @@ function getPropertyImage(seed = Math.random()) {
         'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=400',
         'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400',
     ];
-    
-    const index = Math.floor(seed * images.length);
-    return images[index];
+
+    // Handle large seeds (like from IDs) by using modulo if seed > 1
+    let index;
+    if (seed > 1) {
+        index = Math.floor(seed) % images.length;
+    } else {
+        index = Math.floor(seed * images.length);
+    }
+
+    return images[index] || images[0]; // Fallback just in case
 }
 
 // Local Storage Helpers
@@ -153,7 +160,7 @@ const storage = {
             return null;
         }
     },
-    
+
     set(key, value) {
         try {
             localStorage.setItem(key, JSON.stringify(value));
@@ -161,7 +168,7 @@ const storage = {
             console.error('Error writing to localStorage:', e);
         }
     },
-    
+
     remove(key) {
         try {
             localStorage.removeItem(key);
@@ -169,7 +176,7 @@ const storage = {
             console.error('Error removing from localStorage:', e);
         }
     },
-    
+
     clear() {
         try {
             localStorage.clear();
@@ -182,15 +189,15 @@ const storage = {
 // API Helper Function
 async function apiRequest(endpoint, options = {}) {
     const token = storage.get('auth_token');
-    
+
     const defaultHeaders = {
         'Content-Type': 'application/json',
     };
-    
+
     if (token) {
         defaultHeaders['Authorization'] = `Bearer ${token}`;
     }
-    
+
     const config = {
         ...options,
         headers: {
@@ -198,10 +205,10 @@ async function apiRequest(endpoint, options = {}) {
             ...options.headers,
         },
     };
-    
+
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-        
+
         // Handle 401 Unauthorized
         if (response.status === 401) {
             storage.remove('auth_token');
@@ -210,13 +217,13 @@ async function apiRequest(endpoint, options = {}) {
             setTimeout(() => showScreen('login-screen'), 2000);
             throw new Error('Unauthorized');
         }
-        
+
         const data = await response.json();
-        
+
         if (!response.ok) {
             throw new Error(data.message || `HTTP error! status: ${response.status}`);
         }
-        
+
         return data;
     } catch (error) {
         console.error('API Request Error:', error);
@@ -235,7 +242,7 @@ function showLoading(elementId) {
 // Animate on Scroll
 function initScrollAnimations() {
     const elements = document.querySelectorAll('.animate-on-scroll');
-    
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -245,7 +252,7 @@ function initScrollAnimations() {
     }, {
         threshold: 0.1
     });
-    
+
     elements.forEach(el => observer.observe(el));
 }
 
@@ -281,7 +288,7 @@ function confirmAction(message, onConfirm) {
 // Initialize utilities when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     initScrollAnimations();
-    
+
     // Check theme preference
     const savedTheme = storage.get('theme');
     if (savedTheme) {

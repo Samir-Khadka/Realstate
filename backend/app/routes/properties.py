@@ -1,11 +1,13 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, url_for
+import os
+from werkzeug.utils import secure_filename
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 from marshmallow.exceptions import ValidationError
 from ..schemas.property_schema import PropertySchema
 from ..utils.decorators import role_required, property_ownership_required
-from .. import mongo  # <-- FIX: Import mongo directly
+from .. import mongo
 
 properties_bp = Blueprint('properties', __name__, url_prefix='/properties')
 property_schema = PropertySchema()
@@ -43,7 +45,21 @@ def get_properties():
 @jwt_required()
 @role_required('seller', 'agent')
 def create_property():
-    json_data = request.get_json()
+    # Handle multipart/form-data
+    if request.content_type and 'multipart/form-data' in request.content_type:
+        form_data = request.form.to_dict()
+        # Convert numeric fields
+        try:
+            if 'price' in form_data: form_data['price'] = float(form_data['price'])
+            if 'bedrooms' in form_data: form_data['bedrooms'] = int(form_data['bedrooms'])
+            if 'bathrooms' in form_data: form_data['bathrooms'] = int(form_data['bathrooms'])
+            if 'area_sqft' in form_data: form_data['area_sqft'] = int(form_data['area_sqft'])
+        except ValueError:
+            return jsonify({"message": "Invalid numeric data"}), 400
+        json_data = form_data
+    else:
+        json_data = request.get_json()
+
     if not json_data:
         return jsonify({"message": "No input data provided"}), 400
 
@@ -51,6 +67,25 @@ def create_property():
         data = property_schema.load(json_data)
     except ValidationError as err:
         return jsonify(err.messages), 422
+
+    # Handle Image Upload
+    if 'image' in request.files:
+        file = request.files['image']
+        if file and file.filename != '':
+            filename = secure_filename(file.filename)
+            # Create unique filename
+            timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+            unique_filename = f"{timestamp}_{filename}"
+            
+            # Ensure upload directory exists
+            upload_dir = os.path.join(os.getcwd(), 'app', 'static', 'uploads', 'properties')
+            os.makedirs(upload_dir, exist_ok=True)
+            
+            file_path = os.path.join(upload_dir, unique_filename)
+            file.save(file_path)
+            
+            # Store URL (assuming static files are served from /static)
+            data['image_url'] = f"http://localhost:5000/static/uploads/properties/{unique_filename}"
 
     data['seller_id'] = get_jwt_identity()
     data['views'] = 0

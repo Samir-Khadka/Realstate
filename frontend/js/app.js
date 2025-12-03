@@ -353,7 +353,7 @@ function searchFromHero() {
 
 // Create Property Card HTML
 function createPropertyCard(property, showActions = false) {
-    const image = getPropertyImage(parseFloat(property._id?.slice(-8)) || Math.random());
+    const image = property.image_url || getPropertyImage(parseFloat(property._id?.slice(-8)) || Math.random());
     const isOwner = currentUser && property.seller_id === currentUser.username;
 
     const actionsHTML = showActions ? `

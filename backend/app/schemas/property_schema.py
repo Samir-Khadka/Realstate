@@ -15,3 +15,4 @@ class PropertySchema(ma.Schema):
     listing_age = fields.Int(dump_only=True)
     views = fields.Int(dump_only=True)
     seller_id = fields.Str(dump_only=True)
+    image_url = fields.Str(dump_only=True)

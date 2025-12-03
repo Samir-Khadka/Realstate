@@ -166,7 +166,7 @@ async function showPropertyDetail(propertyId) {
         document.getElementById('modal-property-seller').textContent = property.seller_id;
 
         // Set image
-        const image = getPropertyImage(parseFloat(property._id?.slice(-8)) || Math.random());
+        const image = property.image_url || getPropertyImage(parseFloat(property._id?.slice(-8)) || Math.random());
         document.getElementById('modal-property-image').src = image;
 
         // Set description (placeholder since not in schema)
@@ -305,15 +305,19 @@ async function handlePropertySubmit(event) {
     const propertyId = document.getElementById('edit-property-id').value;
     const isEdit = !!propertyId;
 
-    const propertyData = {
-        property_title: document.getElementById('property-title').value.trim(),
-        price: parseFloat(document.getElementById('property-price').value),
-        property_type: document.getElementById('property-type').value,
-        location: document.getElementById('property-location').value.trim(),
-        bedrooms: parseInt(document.getElementById('property-bedrooms').value),
-        bathrooms: parseInt(document.getElementById('property-bathrooms').value),
-        area_sqft: parseInt(document.getElementById('property-area').value),
-    };
+    const formData = new FormData();
+    formData.append('property_title', document.getElementById('property-title').value.trim());
+    formData.append('price', document.getElementById('property-price').value);
+    formData.append('property_type', document.getElementById('property-type').value);
+    formData.append('location', document.getElementById('property-location').value.trim());
+    formData.append('bedrooms', document.getElementById('property-bedrooms').value);
+    formData.append('bathrooms', document.getElementById('property-bathrooms').value);
+    formData.append('area_sqft', document.getElementById('property-area').value);
+
+    const imageFile = document.getElementById('property-image').files[0];
+    if (imageFile) {
+        formData.append('image', imageFile);
+    }
 
     try {
         const button = event.target.querySelector('button[type="submit"]');
@@ -321,15 +325,39 @@ async function handlePropertySubmit(event) {
         button.textContent = isEdit ? 'Updating...' : 'Creating...';
 
         if (isEdit) {
+            // For edit, we might need to handle JSON vs FormData depending on if image is updated
+            // But for now, let's assume we can send JSON for updates if no image, or FormData if supported
+            // The backend update_property currently expects JSON. 
+            // TODO: Update backend update_property to handle FormData if we want to support image update
+            // For now, only support image upload on creation or separate endpoint
+
+            // Reverting to JSON for edit as backend update_property wasn't modified
+            const propertyData = {
+                property_title: document.getElementById('property-title').value.trim(),
+                price: parseFloat(document.getElementById('property-price').value),
+                property_type: document.getElementById('property-type').value,
+                location: document.getElementById('property-location').value.trim(),
+                bedrooms: parseInt(document.getElementById('property-bedrooms').value),
+                bathrooms: parseInt(document.getElementById('property-bathrooms').value),
+                area_sqft: parseInt(document.getElementById('property-area').value),
+            };
+
             await apiRequest(`/properties/${propertyId}`, {
                 method: 'PUT',
                 body: JSON.stringify(propertyData),
             });
             showToast('Property updated successfully!', 'success');
         } else {
+            // For creation, use FormData (no Content-Type header, let browser set it with boundary)
+            // apiRequest sets Content-Type: application/json by default if not overridden
+            // We need to override it to null so browser sets it
+
             await apiRequest('/properties', {
                 method: 'POST',
-                body: JSON.stringify(propertyData),
+                body: formData,
+                headers: {
+                    'Content-Type': null // Let browser set multipart/form-data with boundary
+                }
             });
             showToast('Property created successfully!', 'success');
         }
