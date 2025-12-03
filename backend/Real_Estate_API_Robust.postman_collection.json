@@ -1,0 +1,260 @@
+{
+    "info": {
+        "_postman_id": "unique-id-for-simple-collection",
+        "name": "Real Estate API - Simple Seller Flow",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "1. Login as Seeded Seller (seller_jane)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200 OK\", () => pm.response.to.have.status(200));",
+                            "pm.test(\"Access token is present\", () => {",
+                            "    const jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('access_token');",
+                            "});",
+                            "// Store the token for all subsequent requests",
+                            "pm.collectionVariables.set('auth_token', pm.response.json().access_token);"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"username\": \"seller_jane\",\n    \"password\": \"password123\"\n}"
+                },
+                "url": {
+                    "raw": "{{url}}/auth/login",
+                    "host": ["{{url}}"],
+                    "path": ["auth", "login"]
+                }
+            }
+        },
+        {
+            "name": "2. Create New Property",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "const jsonData = pm.response.json();",
+                            "pm.test(\"Status code is 201 Created\", () => pm.response.to.have.status(201));",
+                            "pm.test(\"Response contains property_title\", () => pm.expect(jsonData).to.have.property('property_title'));",
+                            "// Store the new property's ID for subsequent requests",
+                            "pm.collectionVariables.set('property_id', jsonData._id);"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{auth_token}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"property_title\": \"Postman Test Property - Simple Flow\",\n    \"price\": 450000,\n    \"location\": \"Test City\",\n    \"property_type\": \"apartment\",\n    \"bedrooms\": 2,\n    \"bathrooms\": 1,\n    \"area_sqft\": 900\n}"
+                },
+                "url": {
+                    "raw": "{{url}}/properties",
+                    "host": ["{{url}}"],
+                    "path": ["properties"]
+                }
+            }
+        },
+        {
+            "name": "3. Get Single Property",
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "exec": [
+                            "// Fail the test if property_id is not set to avoid a 404",
+                            "if (!pm.collectionVariables.get('property_id')) {",
+                            "    pm.test('[PRE-REQUEST] property_id is not set. Skipping test.', () => pm.expect.fail('property_id variable is not set. A previous test must have failed.'));",
+                            "}"
+                        ],
+                        "type": "text/javascript"
+                    }
+                },
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200 OK\", () => pm.response.to.have.status(200));",
+                            "pm.test(\"Response has correct title\", () => {",
+                            "    const jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.property_title).to.eql(\"Postman Test Property - Simple Flow\");",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{url}}/properties/{{property_id}}",
+                    "host": ["{{url}}"],
+                    "path": ["properties", "{{property_id}}"]
+                }
+            }
+        },
+        {
+            "name": "4. Update Property",
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "exec": [
+                            "if (!pm.collectionVariables.get('property_id')) {",
+                            "    pm.test('[PRE-REQUEST] property_id is not set. Skipping test.', () => pm.expect.fail('property_id variable is not set. A previous test must have failed.'));",
+                            "}"
+                        ],
+                        "type": "text/javascript"
+                    }
+                },
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200 OK\", () => pm.response.to.have.status(200));",
+                            "pm.test(\"Price was updated correctly\", () => {",
+                            "    const jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.price).to.eql(475000);",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{auth_token}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"price\": 475000,\n    \"property_title\": \"Postman Test Property (Updated)\"\n}"
+                },
+                "url": {
+                    "raw": "{{url}}/properties/{{property_id}}",
+                    "host": ["{{url}}"],
+                    "path": ["properties", "{{property_id}}"]
+                }
+            }
+        },
+        {
+            "name": "5. Delete Property",
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "exec": [
+                            "if (!pm.collectionVariables.get('property_id')) {",
+                            "    pm.test('[PRE-REQUEST] property_id is not set. Skipping test.', () => pm.expect.fail('property_id variable is not set. A previous test must have failed.'));",
+                            "}"
+                        ],
+                        "type": "text/javascript"
+                    }
+                },
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200 OK\", () => pm.response.to.have.status(200));",
+                            "pm.test(\"Success message is present\", () => pm.expect(pm.response.json().message).to.eql(\"Property deleted successfully\"));"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{auth_token}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "{{url}}/properties/{{property_id}}",
+                    "host": ["{{url}}"],
+                    "path": ["properties", "{{property_id}}"]
+                }
+            }
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "url",
+            "value": "http://127.0.0.1:5000"
+        }
+    ]
+}

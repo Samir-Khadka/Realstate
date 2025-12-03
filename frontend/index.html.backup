@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Find your dream home with our real estate marketplace. Browse properties, connect with sellers, and discover the perfect place.">
+    <title>Real Estate Marketplace - Find Your Dream Home</title>
+
+    <!-- Favicon -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body data-theme="light">
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- ========================================
+         LANDING PAGE (Unauthenticated)
+         ======================================== -->
+    <div id="landing-screen" class="screen">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Find Your Dream Home</h1>
+                <p class="hero-subtitle">Discover the perfect property from thousands of listings. Buy, sell, or rent
+                    with confidence.</p>
+
+                <!-- Search Bar -->
+                <div class="search-bar">
+                    <input type="text" id="hero-search-location" class="search-input" placeholder="Location">
+                    <select id="hero-search-type" class="search-input">
+                        <option value="">Property Type</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="villa">Villa</option>
+                        <option value="house">House</option>
+                        <option value="commercial">Commercial</option>
+                    </select>
+                    <select id="hero-search-price" class="search-input">
+                        <option value="">Price Range</option>
+                        <option value="0-100000">Under $100K</option>
+                        <option value="100000-300000">$100K - $300K</option>
+                        <option value="300000-500000">$300K - $500K</option>
+                        <option value="500000-1000000">$500K - $1M</option>
+                        <option value="1000000-999999999">$1M+</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="searchFromHero()">
+                        <span>Search Properties</span>
+                    </button>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button class="btn btn-lg btn-primary" onclick="showScreen('login-screen')">Get Started</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="container" style="padding: 4rem 1.5rem;">
+            <h2 class="text-center" style="margin-bottom: 3rem;">Why Choose Us</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                <div class="card card-glass text-center">
+                    <div class="card-body">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🏡</div>
+                        <h3>Verified Listings</h3>
+                        <p>All properties are verified for authenticity and accuracy</p>
+                    </div>
+                </div>
+                <div class="card card-glass text-center">
+                    <div class="card-body">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
+                        <h3>Expert Agents</h3>
+                        <p>Connect with professional real estate agents</p>
+                    </div>
+                </div>
+                <div class="card card-glass text-center">
+                    <div class="card-body">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🔒</div>
+                        <h3>Secure Transactions</h3>
+                        <p>Safe and secure platform for all your transactions</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h4>About Us</h4>
+                        <p>Your trusted partner in finding the perfect property.</p>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Quick Links</h4>
+                        <ul class="footer-links">
+                            <li><a href="#" onclick="showScreen('login-screen')">Login</a></li>
+                            <li><a href="#" onclick="showScreen('register-screen')">Register</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Contact</h4>
+                        <ul class="footer-links">
+                            <li>Email: info@realestate.com</li>
+                            <li>Phone: (555) 123-4567</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2024 Real Estate Marketplace. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ========================================
+         LOGIN SCREEN
+         ======================================== -->
+    <div id="login-screen" class="screen hidden">
+        <div class="container"
+            style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1.5rem;">
+            <div class="card" style="max-width: 450px; width: 100%;">
+                <div class="card-body" style="padding: 2.5rem;">
+                    <h2 class="text-center" style="margin-bottom: 2rem;">Welcome Back</h2>
+
+                    <form id="login-form" onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" id="login-username" class="form-control"
+                                placeholder="Enter your username" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" id="login-password" class="form-control"
+                                placeholder="Enter your password" required>
+                        </div>
+
+                        <div class="form-check">
+                            <input type="checkbox" id="remember-me">
+                            <label for="remember-me">Remember me</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary"
+                            style="width: 100%; margin-top: 1rem;">Login</button>
+                    </form>
+
+                    <div style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary);">
+                        Don't have an account? <a href="#" onclick="showScreen('register-screen')"
+                            style="font-weight: 600;">Sign Up</a>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <a href="#" onclick="showScreen('landing-screen')"
+                            style="color: var(--text-muted); font-size: 0.875rem;">← Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         REGISTER SCREEN
+         ======================================== -->
+    <div id="register-screen" class="screen hidden">
+        <div class="container"
+            style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1.5rem;">
+            <div class="card" style="max-width: 450px; width: 100%;">
+                <div class="card-body" style="padding: 2.5rem;">
+                    <h2 class="text-center" style="margin-bottom: 2rem;">Create Account</h2>
+                    <div id="dashboard-screen" class="screen hidden">
+                        <!-- Navigation Bar -->
+                        <nav class="navbar">
+                            <div class="container navbar-container">
+                                <div class="navbar-brand">🏠 RealEstate</div>
+
+                                <ul class="navbar-nav" id="main-nav">
+                                    <li><a href="#" class="nav-link active" onclick="showDashboardTab('home')">Home</a>
+                                    </li>
+                                    <li><a href="#" class="nav-link"
+                                            onclick="showDashboardTab('properties')">Properties</a></li>
+                                    <li id="my-listings-nav" class="hidden"><a href="#" class="nav-link"
+                                            onclick="showDashboardTab('my-listings')">My Listings</a></li>
+                                    <li id="admin-nav" class="hidden"><a href="#" class="nav-link"
+                                            onclick="showDashboardTab('admin')">Admin Panel</a></li>
+
+                                    <!-- Dark Mode Toggle -->
+                                    <li>
+                                        <button onclick="toggleDarkMode()" class="btn btn-sm btn-secondary"
+                                            style="padding: 0.5rem 1rem;">
+                                            <span id="theme-icon">🌙</span>
+                                        </button>
+                                    </li>
+
+                                    <!-- User Menu -->
+                                    <li class="user-menu">
+                                        <div class="user-avatar" onclick="toggleUserDropdown()">
+                                            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23667eea'/><text x='50' y='60' text-anchor='middle' fill='white' font-size='40' font-family='Arial'>U</text></svg>"
+                                                alt="User" style="width: 100%; height: 100%; border-radius: 50%;">
+                                        </div>
+                                        <div id="user-dropdown" class="dropdown-menu">
+                                            <div class="dropdown-item" onclick="showProfile()">
+                                                <span>👤</span> Profile
+                                            </div>
+                                            <div class="dropdown-divider"></div>
+                                            <div class="dropdown-item" onclick="handleLogout()">
+                                                <span>🚪</span> Logout
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                                <!-- Mobile Toggle -->
+                                <button class="navbar-toggle" onclick="toggleMobileMenu()">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </button>
+                            </div>
+                        </nav>
+
+                        <!-- Dashboard Home Tab -->
+                        <div id="tab-home" class="dashboard-tab">
+                            <div class="container" style="padding: 3rem 1.5rem;">
+                                <h1 style="margin-bottom: 2rem;">Welcome, <span id="username-display">User</span>! 👋
+                                </h1>
+
+                                <div
+                                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h3 style="color: var(--primary-start);" id="stats-properties">0</h3>
+                                            <p style="margin: 0;">Total Properties</p>
+                                        </div>
+                                    </div>
+                                    <div class="card" id="stats-my-listings-card" class="hidden">
+                                        <div class="card-body">
+                                            <h3 style="color: var(--success);" id="stats-my-listings">0</h3>
+                                            <p style="margin: 0;">My Listings</p>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h3 style="color: var(--accent-teal);" id="stats-views">0</h3>
+                                            <p style="margin: 0;">Total Views</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h2 style="margin-bottom: 1.5rem;">Recent Properties</h2>
+                                <div id="recent-properties" class="property-grid">
+                                    <!-- Properties will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Properties Tab -->
+                        <div id="tab-properties" class="dashboard-tab hidden">
+                            <div class="container" style="padding: 3rem 1.5rem;">
+                                <div style="display: grid; grid-template-columns: 280px 1fr; gap: 2rem;">
+                                    <!-- Filters Sidebar -->
+                                    <aside class="filters-sidebar">
+                                        <h3 style="margin-bottom: 1.5rem;">Filters</h3>
+
+                                        <div class="filter-section">
+                                            <label class="filter-title">Location</label>
+                                            <input type="text" id="filter-location" class="form-control"
+                                                placeholder="Enter location">
+                                        </div>
+
+                                        <div class="filter-section">
+                                            <label class="filter-title">Property Type</label>
+                                            <select id="filter-type" class="form-control">
+                                                <option value="">All Types</option>
+                                                <option value="apartment">Apartment</option>
+                                                <option value="villa">Villa</option>
+                                                <option value="house">House</option>
+                                                <option value="commercial">Commercial</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="filter-section">
+                                            <label class="filter-title">Price Range</label>
+                                            <input type="number" id="filter-min-price" class="form-control"
+                                                placeholder="Min Price" style="margin-bottom: 0.5rem;">
+                                            <input type="number" id="filter-max-price" class="form-control"
+                                                placeholder="Max Price">
+                                        </div>
+
+                                        <div class="filter-section">
+                                            <label class="filter-title">Bedrooms</label>
+                                            <select id="filter-bedrooms" class="form-control">
+                                                <option value="">Any</option>
+                                                <option value="1">1+</option>
+                                                <option value="2">2+</option>
+                                                <option value="3">3+</option>
+                                                <option value="4">4+</option>
+                                                <option value="5">5+</option>
+                                            </select>
+                                        </div>
+
+                                        <button class="btn btn-primary" onclick="applyFilters()"
+                                            style="width: 100%; margin-top: 1rem;">Apply Filters</button>
+                                        <button class="btn btn-secondary" onclick="resetFilters()"
+                                            style="width: 100%; margin-top: 0.5rem;">Reset</button>
+                                    </aside>
+
+                                    <!-- Properties Grid -->
+                                    <div>
+                                        <div
+                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                                            <h2><span id="property-count">0</span> Properties Found</h2>
+                                            <select id="sort-properties" class="form-control" style="width: 200px;"
+                                                onchange="sortProperties()">
+                                                <option value="newest">Newest First</option>
+                                                <option value="price-low">Price: Low to High</option>
+                                                <option value="price-high">Price: High to Low</option>
+                                                <option value="views">Most Viewed</option>
+                                            </select>
+                                        </div>
+
+                                        <div id="properties-grid" class="property-grid">
+                                            <!-- Properties will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- My Listings Tab (Sellers/Agents Only) -->
+                        <div id="tab-my-listings" class="dashboard-tab hidden">
+                            <div class="container" style="padding: 3rem 1.5rem;">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                                    <h1>My Listings</h1>
+                                    <button class="btn btn-primary" onclick="showAddPropertyForm()">+ Add New
+                                        Property</button>
+                                </div>
+
+                                <div id="my-listings-grid" class="property-grid">
+                                    <!-- User's properties will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Admin Panel Tab (Admin Only) -->
+                        <div id="tab-admin" class="dashboard-tab hidden">
+                            <div class="container" style="padding: 3rem 1.5rem;">
+                                <h1 style="margin-bottom: 2rem;">Admin Panel</h1>
+
+                                <!-- Admin Sub-tabs -->
+                                <div
+                                    style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid var(--border-color);">
+                                    <button class="btn btn-secondary" id="admin-users-tab"
+                                        onclick="showAdminTab('users')"
+                                        style="border-radius: 0; border-bottom: 3px solid var(--primary-start);">Users</button>
+                                    <button class="btn btn-secondary" id="admin-properties-tab"
+                                        onclick="showAdminTab('properties')"
+                                        style="border-radius: 0;">Properties</button>
+                                </div>
+
+                                <!-- Users Management -->
+                                <div id="admin-users-content" class="admin-content">
+                                    <h2 style="margin-bottom: 1.5rem;">All Users</h2>
+                                    <div style="overflow-x: auto;">
+                                        <table style="width: 100%; border-collapse: collapse;">
+                                            <thead>
+                                                <tr style="background: var(--bg-secondary); text-align: left;">
+                                                    <th style="padding: 1rem;">Username</th>
+                                                    <th style="padding: 1rem;">Email</th>
+                                                    <th style="padding: 1rem;">Role</th>
+                                                    <th style="padding: 1rem;">Created</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="admin-users-table">
+                                                <!-- Users will be loaded here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Properties Management -->
+                                <div id="admin-properties-content" class="admin-content hidden">
+                                    <h2 style="margin-bottom: 1.5rem;">All Properties</h2>
+                                    <div id="admin-properties-grid" class="property-grid">
+                                        <!-- All properties will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================
+         PROPERTY DETAIL MODAL
+         ======================================== -->
+                    <div id="property-modal" class="modal">
+                        <div class="modal-content" style="max-width: 900px;">
+                            <div class="modal-header">
+                                <h2 class="modal-title" id="modal-property-title">Property Details</h2>
+                                <button class="modal-close" onclick="closePropertyModal()">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <img id="modal-property-image" src="" alt="Property"
+                                    style="width: 100%; height: 400px; object-fit: cover; border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
+
+                                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                                    <div>
+                                        <h3 id="modal-property-price"
+                                            style="color: var(--primary-start); margin-bottom: 1rem;">$0</h3>
+
+                                        <div
+                                            style="display: flex; gap: 1rem; margin-bottom: 1.5rem; color: var(--text-muted); font-size: 0.875rem;">
+                                            <span>📍 <span id="modal-property-location"></span></span>
+                                            <span>🏠 <span id="modal-property-type"></span></span>
+                                        </div>
+
+                                        <div
+                                            style="display: flex; gap: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+                                            <div>
+                                                <strong id="modal-property-bedrooms">0</strong> Bedrooms
+                                            </div>
+                                            <div>
+                                                <strong id="modal-property-bathrooms">0</strong> Bathrooms
+                                            </div>
+                                            <div>
+                                                <strong id="modal-property-area">0</strong> sqft
+                                            </div>
+                                        </div>
+
+                                        <div style="margin-bottom: 1.5rem;">
+                                            <h4>Description</h4>
+                                            <p id="modal-property-description" style="color: var(--text-secondary);">
+                                                Property
+                                                description will appear here.</p>
+                                        </div>
+
+                                        <div
+                                            style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-muted);">
+                                            <span>👁️ <span id="modal-property-views">0</span> views</span>
+                                            <span>📅 Listed <span id="modal-property-age">0</span> days ago</span>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="card" style="background: var(--bg-secondary);">
+                                            <div class="card-body">
+                                                <h4 style="margin-bottom: 1rem;">Contact Seller</h4>
+                                                <p
+                                                    style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                                                    Seller: <strong id="modal-property-seller"></strong>
+                                                </p>
+
+                                                <form id="contact-form" onsubmit="handleContactSeller(event)">
+                                                    <div class="form-group">
+                                                        <textarea id="contact-message" class="form-control" rows="4"
+                                                            placeholder="Enter your message..." required></textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary"
+                                                        style="width: 100%;">Send
+                                                        Message</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================
+         ADD/EDIT PROPERTY MODAL
+         ======================================== -->
+                    <div id="property-form-modal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2 class="modal-title" id="property-form-title">Add New Property</h2>
+                                <button class="modal-close" onclick="closePropertyFormModal()">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="property-form" onsubmit="handlePropertySubmit(event)">
+                                    <input type="hidden" id="edit-property-id">
+
+                                    <div class="form-group">
+                                        <label class="form-label">Property Title</label>
+                                        <input type="text" id="property-title" class="form-control"
+                                            placeholder="Beautiful 3BR Apartment" required>
+                                    </div>
+
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                        <div class="form-group">
+                                            <label class="form-label">Price ($)</label>
+                                            <input type="number" id="property-price" class="form-control"
+                                                placeholder="250000" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label">Property Type</label>
+                                            <select id="property-type" class="form-control" required>
+                                                <option value="">Select Type</option>
+                                                <option value="apartment">Apartment</option>
+                                                <option value="villa">Villa</option>
+                                                <option value="house">House</option>
+                                                <option value="commercial">Commercial</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Location</label>
+                                        <input type="text" id="property-location" class="form-control"
+                                            placeholder="Downtown, City Name" required>
+                                    </div>
+
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                                        <div class="form-group">
+                                            <label class="form-label">Bedrooms</label>
+                                            <input type="number" id="property-bedrooms" class="form-control"
+                                                placeholder="3" required min="0">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label">Bathrooms</label>
+                                            <input type="number" id="property-bathrooms" class="form-control"
+                                                placeholder="2" required min="0">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label">Area (sqft)</label>
+                                            <input type="number" id="property-area" class="form-control"
+                                                placeholder="1500" required min="0">
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            onclick="closePropertyFormModal()">Cancel</button>
+                                        <button type="submit" class="btn btn-primary">Save Property</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scripts -->
+                    <script src="js/utils.js"></script>
+                    <script src="js/app.js"></script>
+                    <script src="js/properties.js"></script>
+                    <script src="js/admin.js"></script>
+</body>
+
+</html>

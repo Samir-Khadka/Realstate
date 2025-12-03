@@ -1,0 +1,62 @@
+[
+    {
+        "_id": "6902d81dbaaa8f037fb74f4a",
+        "property_title": "Modern Downtown Apartment with City Views",
+        "price": 550000.0,
+        "location": "New York, NY",
+        "property_type": "apartment",
+        "bedrooms": 2,
+        "bathrooms": 2,
+        "area_sqft": 1200,
+        "listing_age": 5,
+        "views": 152,
+        "seller_id": "seller_jane",
+        "created_at": "2025-10-25T03:14:36.990000",
+        "updated_at": "2025-10-25T03:14:36.990000"
+    },
+    {
+        "_id": "6902d81dbaaa8f037fb74f4b",
+        "property_title": "Spacious Suburban Villa with Garden",
+        "price": 1200000.0,
+        "location": "Westchester, NY",
+        "property_type": "villa",
+        "bedrooms": 4,
+        "bathrooms": 3,
+        "area_sqft": 3500,
+        "listing_age": 20,
+        "views": 88,
+        "seller_id": "seller_jane",
+        "created_at": "2025-10-10T03:14:36.990000",
+        "updated_at": "2025-10-10T03:14:36.990000"
+    },
+    {
+        "_id": "6902d81dbaaa8f037fb74f4c",
+        "property_title": "Cozy Studio in the Heart of the City",
+        "price": 350000.0,
+        "location": "San Francisco, CA",
+        "property_type": "studio",
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "area_sqft": 550,
+        "listing_age": 1,
+        "views": 310,
+        "seller_id": "agent_mike",
+        "created_at": "2025-10-29T03:14:36.990000",
+        "updated_at": "2025-10-29T03:14:36.990000"
+    },
+    {
+        "_id": "6902d81dbaaa8f037fb74f4d",
+        "property_title": "Luxury Penthouse with Rooftop Terrace",
+        "price": 2500000.0,
+        "location": "Miami, FL",
+        "property_type": "apartment",
+        "bedrooms": 3,
+        "bathrooms": 4,
+        "area_sqft": 2800,
+        "listing_age": 15,
+        "views": 450,
+        "seller_id": "agent_mike",
+        "created_at": "2025-10-15T03:14:36.990000",
+        "updated_at": "2025-10-15T03:14:36.990000"
+    }
+]

@@ -1,0 +1,42 @@
+[
+    {
+        "_id": "6902d81dbaaa8f037fb74f46",
+        "username": "admin",
+        "email": "admin@example.com",
+        "password": "$2b$12$mArQFJSVPaoacIaXXTmkcONUZt/zudKfK.fq71gPE9HKjGfKKQ73G",
+        "role": "admin",
+        "created_at": "2025-10-30T03:14:36.238000"
+    },
+    {
+        "_id": "6902d81dbaaa8f037fb74f47",
+        "username": "seller_jane",
+        "email": "jane.seller@example.com",
+        "password": "$2b$12$iXj/s4eEvDt/yg.6L831ue5ww1YCjWk0zpnw/.kWtNgkTiqsPV/Pi",
+        "role": "seller",
+        "created_at": "2025-10-30T03:14:36.490000"
+    },
+    {
+        "_id": "6902d81dbaaa8f037fb74f48",
+        "username": "agent_mike",
+        "email": "mike.agent@example.com",
+        "password": "$2b$12$i9up0k4ed2OLyXfQzCCyk.irh/OTb.dv2MoLeuZsUpitHhgZJhm/q",
+        "role": "agent",
+        "created_at": "2025-10-30T03:14:36.740000"
+    },
+    {
+        "_id": "6902d81dbaaa8f037fb74f49",
+        "username": "buyer_john",
+        "email": "john.buyer@example.com",
+        "password": "$2b$12$P.IInC/AxJSnLRjJpPieMOdaKybGubFmDBWutds4gDjH2G5NiEDkq",
+        "role": "buyer",
+        "created_at": "2025-10-30T03:14:36.990000"
+    },
+    {
+        "_id": "6902de14beb6194bd215eff0",
+        "username": "testuser",
+        "email": "test@example.com",
+        "password": "$2b$12$w1oUkWhsL0Dqd7j.A5/6E.xK.aVjVwtMmWHL8uB4XDnDFrBvJMz.e",
+        "role": "buyer",
+        "created_at": "2025-10-30T03:40:04.903000"
+    }
+]

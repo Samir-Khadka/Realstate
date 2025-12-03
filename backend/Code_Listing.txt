@@ -1,0 +1,1592 @@
+================================================================================
+FILE: Code_Listing.txt
+================================================================================
+
+
+
+================================================================================
+FILE: export_database.py
+================================================================================
+
+import os
+import json
+from pymongo import MongoClient
+from bson.objectid import ObjectId
+from dotenv import load_dotenv
+from datetime import datetime
+
+load_dotenv()
+
+MONGO_URI = os.environ.get('MONGO_URI')
+DB_NAME = MONGO_URI.split('/')[-1] if MONGO_URI else 'real_estate_db'
+
+# This custom encoder handles MongoDB-specific data types like ObjectId and datetime
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        if isinstance(o, datetime):
+            return o.isoformat()
+        return super().default(o)
+
+def export_collections():
+    if not MONGO_URI:
+        print("Error: MONGO_URI not found in .env file.")
+        return
+
+    try:
+        client = MongoClient(MONGO_URI)
+        db = client[DB_NAME]
+        print(f"Connected to database '{DB_NAME}'.")
+    except Exception as e:
+        print(f"Error connecting to MongoDB: {e}")
+        return
+    
+    collections_to_export = ['users', 'properties', 'messages']
+    
+    print("\nExporting collections...")
+    for collection_name in collections_to_export:
+        try:
+            collection = db[collection_name]
+            documents = list(collection.find({}))
+            
+            filename = f"{collection_name}.json"
+            with open(filename, 'w', encoding='utf-8') as f:
+                json.dump(documents, f, indent=4, cls=CustomJSONEncoder)
+            
+            print(f"  - Exported {len(documents)} documents to {filename}")
+        except Exception as e:
+            print(f"  - Error exporting {collection_name}: {e}")
+
+    client.close()
+    print("\nExport complete. Your JSON files are ready.")
+
+if __name__ == "__main__":
+    export_collections()
+
+================================================================================
+FILE: generate_code_listing.py
+================================================================================
+
+import os
+
+# --- Configuration ---
+# Add any file extensions you want to include in the listing.
+INCLUDED_EXTENSIONS = {'.py', '.json', '.md', '.txt', '.yml', '.yaml', '.ini', '.gitignore'}
+# Add any folder names you want to exclude.
+EXCLUDED_FOLDERS = {'venv', '__pycache__', '.git', '.vscode'}
+
+def generate_code_listing():
+    """Generates a single text file containing all code files."""
+    
+    output_filename = "Code_Listing.txt"
+    
+    # Get the root directory of the project
+    root_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    with open(output_filename, 'w', encoding='utf-8') as output_file:
+        # Walk through the directory tree
+        for subdir, dirs, files in os.walk(root_dir):
+            # Remove excluded folders from the walk
+            dirs[:] = [d for d in dirs if d not in EXCLUDED_FOLDERS]
+            
+            for file in files:
+                file_path = os.path.join(subdir, file)
+                file_ext = os.path.splitext(file)[1]
+                
+                # Check if the file should be included
+                if file_ext in INCLUDED_EXTENSIONS:
+                    # Get the relative path from the root
+                    relative_path = os.path.relpath(file_path, root_dir)
+                    
+                    # Write a header for the file
+                    output_file.write("="*80 + "\n")
+                    output_file.write(f"FILE: {relative_path}\n")
+                    output_file.write("="*80 + "\n\n")
+                    
+                    try:
+                        # Read and write the file content
+                        with open(file_path, 'r', encoding='utf-8') as input_file:
+                            content = input_file.read()
+                            output_file.write(content)
+                    except Exception as e:
+                        output_file.write(f"--- ERROR: Could not read file ({e}) ---\n")
+                    
+                    output_file.write("\n\n") # Add space between files
+
+    print(f"✅ Success! Code listing generated at: {os.path.abspath(output_filename)}")
+    print("You can now open this file and use Ctrl+P to print it to a PDF.")
+
+if __name__ == "__main__":
+    generate_code_listing()
+
+================================================================================
+FILE: messages.json
+================================================================================
+
+[]
+
+================================================================================
+FILE: properties.json
+================================================================================
+
+[
+    {
+        "_id": "6902d81dbaaa8f037fb74f4a",
+        "property_title": "Modern Downtown Apartment with City Views",
+        "price": 550000.0,
+        "location": "New York, NY",
+        "property_type": "apartment",
+        "bedrooms": 2,
+        "bathrooms": 2,
+        "area_sqft": 1200,
+        "listing_age": 5,
+        "views": 152,
+        "seller_id": "seller_jane",
+        "created_at": "2025-10-25T03:14:36.990000",
+        "updated_at": "2025-10-25T03:14:36.990000"
+    },
+    {
+        "_id": "6902d81dbaaa8f037fb74f4b",
+        "property_title": "Spacious Suburban Villa with Garden",
+        "price": 1200000.0,
+        "location": "Westchester, NY",
+        "property_type": "villa",
+        "bedrooms": 4,
+        "bathrooms": 3,
+        "area_sqft": 3500,
+        "listing_age": 20,
+        "views": 88,
+        "seller_id": "seller_jane",
+        "created_at": "2025-10-10T03:14:36.990000",
+        "updated_at": "2025-10-10T03:14:36.990000"
+    },
+    {
+        "_id": "6902d81dbaaa8f037fb74f4c",
+        "property_title": "Cozy Studio in the Heart of the City",
+        "price": 350000.0,
+        "location": "San Francisco, CA",
+        "property_type": "studio",
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "area_sqft": 550,
+        "listing_age": 1,
+        "views": 310,
+        "seller_id": "agent_mike",
+        "created_at": "2025-10-29T03:14:36.990000",
+        "updated_at": "2025-10-29T03:14:36.990000"
+    },
+    {
+        "_id": "6902d81dbaaa8f037fb74f4d",
+        "property_title": "Luxury Penthouse with Rooftop Terrace",
+        "price": 2500000.0,
+        "location": "Miami, FL",
+        "property_type": "apartment",
+        "bedrooms": 3,
+        "bathrooms": 4,
+        "area_sqft": 2800,
+        "listing_age": 15,
+        "views": 450,
+        "seller_id": "agent_mike",
+        "created_at": "2025-10-15T03:14:36.990000",
+        "updated_at": "2025-10-15T03:14:36.990000"
+    }
+]
+
+================================================================================
+FILE: pytest.ini
+================================================================================
+
+[tool:pytest]
+testpaths = tests
+python_files = test_*.py
+
+================================================================================
+FILE: README.md
+================================================================================
+
+# Real Estate Property Listings Backend
+
+A robust and scalable RESTful API backend for a real estate marketplace, built with Python Flask and MongoDB.
+
+## Features
+
+- **Property Management**: Full CRUD operations for property listings.
+- **User Authentication**: Secure JWT-based authentication.
+- **Role-Based Access Control (RBAC)**: Different permissions for Buyers, Sellers, Agents, and Admins.
+- **Advanced Filtering**: Search properties by location, price, type, etc.
+- **Security**: Password hashing, JWT tokens, and role-protected endpoints.
+- **Scalable Architecture**: Uses Flask Blueprints and an app factory pattern.
+
+## Project Structure
+real-estate-property-listings-backend/
+├── app/                          # Main application package
+│   ├── init.py              # App factory
+│   ├── models/                  # Database model definitions (for clarity)
+│   ├── routes/                  # API routes/blueprints
+│   │   ├── auth.py              # Authentication endpoints
+│   │   ├── properties.py        # Property CRUD endpoints
+│   │   └── admin.py             # Admin-specific endpoints
+│   ├── schemas/                 # Request/response validation schemas (Marshmallow)
+│   └── utils/                   # Utility functions and decorators
+│       ├── decorators.py        # Custom decorators for RBAC
+│       └── helpers.py           # Helper functions (e.g., password hashing)
+├── config/                       # Configuration files
+│   ├── init.py
+│   └── config.py               # Configuration classes (Dev, Test, Prod)
+├── logs/                        # Application logs (created automatically)
+├── tests/                       # Unit and integration tests (placeholder)
+├── run.py                       # Application entry point
+├── requirements.txt             # Python dependencies
+├── .env.example                 # Environment variables template
+├── .gitignore                   # Git ignore file
+└── README.md                    # This file
+
+================================================================================
+FILE: requirements.txt
+================================================================================
+
+Flask==2.3.3
+Flask-PyMongo==2.3.0
+Flask-JWT-Extended==4.5.3
+Flask-Marshmallow==0.15.0
+marshmallow==3.20.1
+python-dotenv==1.0.0
+bcrypt==4.0.1
+gunicorn==21.2.0
+Flask-Reuploaded==1.3.0
+# --- Testing Dependencies ---
+pytest
+pytest-flask
+# --- API Documentation ---
+flask-swagger-ui
+
+
+================================================================================
+FILE: run.py
+================================================================================
+
+import os
+from app import create_app
+
+# Determine the environment from the FLASK_ENV environment variable
+env = os.environ.get('FLASK_ENV', 'development')
+app = create_app(env)
+
+if __name__ == '__main__':
+    app.run()
+
+================================================================================
+FILE: seed_database.py
+================================================================================
+
+"""
+Database Seeding Script
+
+This script populates the MongoDB database with initial users and property listings
+for development and testing purposes.
+
+WARNING: This script will DELETE all existing data in the 'users' and 'properties'
+collections before seeding new data.
+
+Usage:
+    python seed_database.py
+"""
+
+import os
+import sys
+from pymongo import MongoClient
+from datetime import datetime, timedelta
+from dotenv import load_dotenv
+
+# Add the project root to the Python path to import local modules
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+# Load environment variables from .env file
+load_dotenv()
+
+# --- Configuration ---
+MONGO_URI = os.environ.get('MONGO_URI')
+DB_NAME = MONGO_URI.split('/')[-1] if MONGO_URI else 'real_estate_db'
+
+# --- Helper Function (copied from utils to avoid app context) ---
+def hash_password(password):
+    """Hashes a password using bcrypt."""
+    import bcrypt
+    pwhash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    return pwhash.decode('utf-8')
+
+# --- Seed Data ---
+USERS = [
+    {
+        "username": "admin",
+        "email": "admin@example.com",
+        "password": hash_password("password123"),
+        "role": "admin",
+        "created_at": datetime.utcnow()
+    },
+    {
+        "username": "seller_jane",
+        "email": "jane.seller@example.com",
+        "password": hash_password("password123"),
+        "role": "seller",
+        "created_at": datetime.utcnow()
+    },
+    {
+        "username": "agent_mike",
+        "email": "mike.agent@example.com",
+        "password": hash_password("password123"),
+        "role": "agent",
+        "created_at": datetime.utcnow()
+    },
+    {
+        "username": "buyer_john",
+        "email": "john.buyer@example.com",
+        "password": hash_password("password123"),
+        "role": "buyer",
+        "created_at": datetime.utcnow()
+    }
+]
+
+PROPERTIES = [
+    {
+        "property_title": "Modern Downtown Apartment with City Views",
+        "price": 550000.00,
+        "location": "New York, NY",
+        "property_type": "apartment",
+        "bedrooms": 2,
+        "bathrooms": 2,
+        "area_sqft": 1200,
+        "listing_age": 5,
+        "views": 152,
+        "seller_id": "seller_jane",
+        "created_at": datetime.utcnow() - timedelta(days=5),
+        "updated_at": datetime.utcnow() - timedelta(days=5)
+    },
+    {
+        "property_title": "Spacious Suburban Villa with Garden",
+        "price": 1200000.00,
+        "location": "Westchester, NY",
+        "property_type": "villa",
+        "bedrooms": 4,
+        "bathrooms": 3,
+        "area_sqft": 3500,
+        "listing_age": 20,
+        "views": 88,
+        "seller_id": "seller_jane",
+        "created_at": datetime.utcnow() - timedelta(days=20),
+        "updated_at": datetime.utcnow() - timedelta(days=20)
+    },
+    {
+        "property_title": "Cozy Studio in the Heart of the City",
+        "price": 350000.00,
+        "location": "San Francisco, CA",
+        "property_type": "studio",
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "area_sqft": 550,
+        "listing_age": 1,
+        "views": 310,
+        "seller_id": "agent_mike",
+        "created_at": datetime.utcnow() - timedelta(days=1),
+        "updated_at": datetime.utcnow() - timedelta(days=1)
+    },
+    {
+        "property_title": "Luxury Penthouse with Rooftop Terrace",
+        "price": 2500000.00,
+        "location": "Miami, FL",
+        "property_type": "apartment",
+        "bedrooms": 3,
+        "bathrooms": 4,
+        "area_sqft": 2800,
+        "listing_age": 15,
+        "views": 450,
+        "seller_id": "agent_mike",
+        "created_at": datetime.utcnow() - timedelta(days=15),
+        "updated_at": datetime.utcnow() - timedelta(days=15)
+    }
+]
+
+def seed_database():
+    """Connects to the database and seeds it with initial data."""
+    if not MONGO_URI:
+        print("Error: MONGO_URI not found in environment variables.")
+        print("Please configure your .env file.")
+        return
+
+    print(f"Connecting to MongoDB at {MONGO_URI}...")
+    try:
+        client = MongoClient(MONGO_URI)
+        db = client[DB_NAME]
+        client.server_info() # Trigger exception if cannot connect
+        print("Connection successful.")
+    except Exception as e:
+        print(f"Error connecting to MongoDB: {e}")
+        return
+
+    # --- Clear existing collections ---
+    print("\nDropping existing collections...")
+    db.users.drop()
+    db.properties.drop()
+    print("Collections 'users' and 'properties' dropped.")
+
+    # --- Seed new data ---
+    print("\nSeeding users...")
+    if USERS:
+        db.users.insert_many(USERS)
+        print(f"Inserted {len(USERS)} users.")
+
+    print("\nSeeding properties...")
+    if PROPERTIES:
+        db.properties.insert_many(PROPERTIES)
+        print(f"Inserted {len(PROPERTIES)} properties.")
+
+    print("\n----------------------------------------")
+    print("✅ Database seeded successfully!")
+    print("----------------------------------------")
+    print("\nDefault Logins:")
+    print("  Admin:      username='admin', password='password123'")
+    print("  Seller:     username='seller_jane', password='password123'")
+    print("  Agent:      username='agent_mike', password='password123'")
+    print("  Buyer:      username='buyer_john', password='password123'")
+
+    client.close()
+
+if __name__ == "__main__":
+    seed_database()
+
+================================================================================
+FILE: users.json
+================================================================================
+
+[
+    {
+        "_id": "6902d81dbaaa8f037fb74f46",
+        "username": "admin",
+        "email": "admin@example.com",
+        "password": "$2b$12$mArQFJSVPaoacIaXXTmkcONUZt/zudKfK.fq71gPE9HKjGfKKQ73G",
+        "role": "admin",
+        "created_at": "2025-10-30T03:14:36.238000"
+    },
+    {
+        "_id": "6902d81dbaaa8f037fb74f47",
+        "username": "seller_jane",
+        "email": "jane.seller@example.com",
+        "password": "$2b$12$iXj/s4eEvDt/yg.6L831ue5ww1YCjWk0zpnw/.kWtNgkTiqsPV/Pi",
+        "role": "seller",
+        "created_at": "2025-10-30T03:14:36.490000"
+    },
+    {
+        "_id": "6902d81dbaaa8f037fb74f48",
+        "username": "agent_mike",
+        "email": "mike.agent@example.com",
+        "password": "$2b$12$i9up0k4ed2OLyXfQzCCyk.irh/OTb.dv2MoLeuZsUpitHhgZJhm/q",
+        "role": "agent",
+        "created_at": "2025-10-30T03:14:36.740000"
+    },
+    {
+        "_id": "6902d81dbaaa8f037fb74f49",
+        "username": "buyer_john",
+        "email": "john.buyer@example.com",
+        "password": "$2b$12$P.IInC/AxJSnLRjJpPieMOdaKybGubFmDBWutds4gDjH2G5NiEDkq",
+        "role": "buyer",
+        "created_at": "2025-10-30T03:14:36.990000"
+    },
+    {
+        "_id": "6902de14beb6194bd215eff0",
+        "username": "testuser",
+        "email": "test@example.com",
+        "password": "$2b$12$w1oUkWhsL0Dqd7j.A5/6E.xK.aVjVwtMmWHL8uB4XDnDFrBvJMz.e",
+        "role": "buyer",
+        "created_at": "2025-10-30T03:40:04.903000"
+    }
+]
+
+================================================================================
+FILE: .pytest_cache\README.md
+================================================================================
+
+# pytest cache directory #
+
+This directory contains data from the pytest's cache plugin,
+which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
+
+**Do not** commit this to version control.
+
+See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+
+
+================================================================================
+FILE: app\__init__.py
+================================================================================
+
+from flask import Flask, jsonify, send_from_directory
+from flask_pymongo import PyMongo
+from flask_jwt_extended import JWTManager
+from flask_marshmallow import Marshmallow
+from flask_swagger_ui import get_swaggerui_blueprint
+from config.config import config_by_name
+import os
+
+# Initialize extensions
+mongo = PyMongo()
+jwt = JWTManager()
+ma = Marshmallow()
+
+def create_app(config_name='development'):
+    """Application factory pattern."""
+    app = Flask(__name__)
+    app.config.from_object(config_by_name[config_name])
+
+    # Initialize extensions with app
+    mongo.init_app(app)
+    jwt.init_app(app)
+    ma.init_app(app)
+
+    # Register blueprints
+    from .routes.auth import auth_bp
+    from .routes.properties import properties_bp
+    from .routes.admin import admin_bp
+
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(properties_bp)
+    app.register_blueprint(admin_bp)
+
+    # --- SWAGGER UI CONFIGURATION ---
+    # We will serve the swagger.json file via a dedicated route
+    swaggerui_blueprint = get_swaggerui_blueprint(
+        base_url='/docs',
+        api_url='/swagger.json',  # Point to our new route
+    )
+    app.register_blueprint(swaggerui_blueprint, url_prefix='/docs')
+    # --- END SWAGGER CONFIG ---
+
+    @app.route('/swagger.json')
+    def swagger_json():
+        """Serve the swagger.json file."""
+        # Get the absolute path of the directory where this file is located
+        # and navigate to the static folder.
+        static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'static')
+        return send_from_directory(static_dir, 'swagger.json')
+
+    @app.route('/')
+    def index():
+        return jsonify({"message": "Real Estate API is running!"})
+
+    return app
+
+================================================================================
+FILE: app\model\property.py
+================================================================================
+
+# This file acts as a schema definition for clarity.
+
+property_model = {
+    "property_title": "string",
+    "price": "float",
+    "location": "string",
+    "property_type": "string (e.g., apartment, villa)",
+    "bedrooms": "integer",
+    "bathrooms": "integer",
+    "area_sqft": "integer",
+    "listing_age": "integer (days)",
+    "views": "integer",
+    "seller_id": "string (references user.username)",
+    "created_at": "datetime (ISO 8601)",
+    "updated_at": "datetime (ISO 8601)"
+}
+
+================================================================================
+FILE: app\model\user.py
+================================================================================
+
+# This file acts as a schema definition for clarity.
+# MongoDB is schemaless, but this documents our intended structure.
+
+USER_ROLES = ['buyer', 'seller', 'agent', 'admin']
+
+user_model = {
+    "username": "string (unique)",
+    "email": "string (unique)",
+    "password_hash": "string",
+    "role": f"string (one of: {', '.join(USER_ROLES)})",
+    "created_at": "datetime (ISO 8601)"
+}
+
+================================================================================
+FILE: app\routes\admin.py
+================================================================================
+
+from flask import Blueprint, jsonify, request
+from bson.objectid import ObjectId
+from ..utils.decorators import role_required
+from .. import mongo  # <-- FIX: Import mongo directly
+
+admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
+
+@admin_bp.route('/properties', methods=['GET'])
+@role_required('admin')
+def get_properties_for_admin():
+    filter_dict = {}
+    if 'status' in request.args and request.args['status'] == 'reported':
+        filter_dict['status'] = 'reported'
+    if 'seller_id' in request.args:
+        filter_dict['seller_id'] = request.args['seller_id']
+
+    # FIX: Use mongo directly
+    properties = mongo.db.properties.find(filter_dict)
+    result = []
+    for prop in properties:
+        prop['_id'] = str(prop['_id'])
+        result.append(prop)
+    
+    return jsonify(result), 200
+
+@admin_bp.route('/properties/<id>', methods=['DELETE'])
+@role_required('admin')
+def admin_delete_property(id):
+    if not ObjectId.is_valid(id):
+        return jsonify({"message": "Invalid property ID"}), 400
+    
+    # FIX: Use mongo directly
+    result = mongo.db.properties.delete_one({"_id": ObjectId(id)})
+    if result.deleted_count:
+        return jsonify({"message": "Property deleted by admin"}), 200
+    return jsonify({"message": "Property not found"}), 404
+
+@admin_bp.route('/users', methods=['GET'])
+@role_required('admin')
+def get_all_users():
+    # FIX: Use mongo directly
+    users = mongo.db.users.find({})
+    result = []
+    for user in users:
+        user.pop('password', None)
+        user['_id'] = str(user['_id'])
+        result.append(user)
+    return jsonify(result), 200
+
+================================================================================
+FILE: app\routes\auth.py
+================================================================================
+
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from bson.objectid import ObjectId
+from marshmallow.exceptions import ValidationError
+from datetime import datetime  # <-- FIX 1: Import datetime
+from ..schemas.user_schema import UserSchema
+from ..utils.helpers import hash_password, check_password
+from .. import mongo
+
+auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
+user_schema = UserSchema()
+
+@auth_bp.route('/register', methods=['POST'])
+def register():
+    json_data = request.get_json()
+    if not json_data:
+        return jsonify({"message": "No input data provided"}), 400
+
+    if mongo.db.users.find_one({"username": json_data.get('username')}):
+        return jsonify({"message": "Username already exists."}), 400
+    if mongo.db.users.find_one({"email": json_data.get('email')}):
+        return jsonify({"message": "Email already registered."}), 400
+
+    try:
+        data = user_schema.load(json_data)
+    except ValidationError as err:
+        return jsonify(err.messages), 422
+
+    data['password'] = hash_password(data['password'])
+    data['role'] = 'buyer'  # Default role
+    # FIX 2: Use Python's datetime instead of a database command
+    data['created_at'] = datetime.utcnow()
+
+    result = mongo.db.users.insert_one(data)
+    if result.inserted_id:
+        return jsonify({"message": "User created successfully!"}), 201
+    return jsonify({"message": "Failed to create user"}), 500
+
+@auth_bp.route('/login', methods=['POST'])
+def login():
+    json_data = request.get_json()
+    if not json_data or not json_data.get('username') or not json_data.get('password'):
+        return jsonify({"message": "Username and password required"}), 400
+
+    user = mongo.db.users.find_one({"username": json_data['username']})
+    if user and check_password(json_data['password'], user['password']):
+        access_token = create_access_token(identity=user['username'])
+        return jsonify(access_token=access_token), 200
+    
+    return jsonify({"message": "Invalid credentials"}), 401
+
+@auth_bp.route('/profile', methods=['GET'])
+@jwt_required()
+def profile():
+    current_user = get_jwt_identity()
+    user = mongo.db.users.find_one({"username": current_user})
+    if user:
+        user.pop('password', None)
+        user['_id'] = str(user['_id'])
+        return jsonify(user), 200
+    return jsonify({"message": "User not found"}), 404
+
+@auth_bp.route('/delete', methods=['DELETE'])
+@jwt_required()
+def delete_account():
+    current_user = get_jwt_identity()
+    result = mongo.db.users.delete_one({"username": current_user})
+    if result.deleted_count:
+        mongo.db.properties.delete_many({"seller_id": current_user})
+        return jsonify({"message": "Account deleted successfully"}), 200
+    return jsonify({"message": "Failed to delete account"}), 500
+
+================================================================================
+FILE: app\routes\properties.py
+================================================================================
+
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from bson.objectid import ObjectId
+from datetime import datetime, timedelta
+from marshmallow.exceptions import ValidationError
+from ..schemas.property_schema import PropertySchema
+from ..utils.decorators import role_required, property_ownership_required
+from .. import mongo  # <-- FIX: Import mongo directly
+
+properties_bp = Blueprint('properties', __name__, url_prefix='/properties')
+property_schema = PropertySchema()
+
+@properties_bp.route('', methods=['GET'])
+def get_properties():
+    filter_dict = {}
+    if 'location' in request.args:
+        filter_dict['location'] = {"$regex": request.args['location'], "$options": "i"}
+    if 'property_type' in request.args:
+        filter_dict['property_type'] = request.args['property_type']
+    if 'min_price' in request.args:
+        filter_dict['price'] = filter_dict.get('price', {})
+        filter_dict['price']['$gte'] = float(request.args['min_price'])
+    if 'max_price' in request.args:
+        filter_dict['price'] = filter_dict.get('price', {})
+        filter_dict['price']['$lte'] = float(request.args['max_price'])
+    if 'bedrooms' in request.args:
+        filter_dict['bedrooms'] = int(request.args['bedrooms'])
+    
+    # FIX: Use mongo directly
+    properties = mongo.db.properties.find(filter_dict)
+    
+    result = []
+    for prop in properties:
+        prop['_id'] = str(prop['_id'])
+        created_at = prop.get('created_at')
+        if isinstance(created_at, datetime):
+            prop['listing_age'] = (datetime.utcnow() - created_at).days
+        result.append(prop)
+
+    return jsonify(result), 200
+
+@properties_bp.route('', methods=['POST'])
+@jwt_required()
+@role_required('seller', 'agent')
+def create_property():
+    json_data = request.get_json()
+    if not json_data:
+        return jsonify({"message": "No input data provided"}), 400
+
+    try:
+        data = property_schema.load(json_data)
+    except ValidationError as err:
+        return jsonify(err.messages), 422
+
+    data['seller_id'] = get_jwt_identity()
+    data['views'] = 0
+    data['listing_age'] = 0
+    data['created_at'] = datetime.utcnow()
+    data['updated_at'] = datetime.utcnow()
+
+    # FIX: Use mongo directly
+    result = mongo.db.properties.insert_one(data)
+    if result.inserted_id:
+        data['_id'] = str(result.inserted_id)
+        return jsonify(data), 201
+    return jsonify({"message": "Failed to create property"}), 500
+
+@properties_bp.route('/<id>', methods=['GET'])
+def get_property(id):
+    if not ObjectId.is_valid(id):
+        return jsonify({"message": "Invalid property ID"}), 400
+        
+    # FIX: Use mongo directly
+    property = mongo.db.properties.find_one_and_update(
+        {"_id": ObjectId(id)},
+        {"$inc": {"views": 1}}
+    )
+    if property:
+        property['_id'] = str(property['_id'])
+        return jsonify(property), 200
+    return jsonify({"message": "Property not found"}), 404
+
+@properties_bp.route('/<id>', methods=['PUT'])
+@property_ownership_required
+def update_property(id):
+    json_data = request.get_json()
+    if not json_data:
+        return jsonify({"message": "No input data provided"}), 400
+
+    try:
+        data = property_schema.load(json_data, partial=True)
+    except ValidationError as err:
+        return jsonify(err.messages), 422
+
+    data['updated_at'] = datetime.utcnow()
+    
+    # FIX: Use mongo directly
+    result = mongo.db.properties.update_one(
+        {"_id": ObjectId(id)},
+        {"$set": data}
+    )
+    if result.modified_count:
+        updated_property = mongo.db.properties.find_one({"_id": ObjectId(id)})
+        updated_property['_id'] = str(updated_property['_id'])
+        return jsonify(updated_property), 200
+    return jsonify({"message": "Property not found or no changes made"}), 404
+
+@properties_bp.route('/<id>', methods=['DELETE'])
+@property_ownership_required
+def delete_property(id):
+    # FIX: Use mongo directly
+    result = mongo.db.properties.delete_one({"_id": ObjectId(id)})
+    if result.deleted_count:
+        return jsonify({"message": "Property deleted successfully"}), 200
+    return jsonify({"message": "Property not found"}), 404
+
+@properties_bp.route('/<property_id>/contact', methods=['POST'])
+@jwt_required()
+def contact_seller(property_id):
+    """Send a message to the seller of a property."""
+    current_user = get_jwt_identity()
+    if not ObjectId.is_valid(property_id):
+        return jsonify({"message": "Invalid property ID"}), 400
+
+    # Find the property to get the seller's ID
+    property = mongo.db.properties.find_one({"_id": ObjectId(property_id)})
+    if not property:
+        return jsonify({"message": "Property not found"}), 404
+    
+    seller_id = property.get('seller_id')
+    if not seller_id:
+        return jsonify({"message": "Seller information not available"}), 404
+
+    # Prevent a user from contacting themselves
+    if seller_id == current_user:
+        return jsonify({"message": "You cannot contact yourself"}), 400
+
+    json_data = request.get_json()
+    if not json_data or not 'message' in json_data:
+        return jsonify({"message": "Message content is required"}), 400
+
+    # Create the message document
+    message = {
+        "from_user": current_user,
+        "to_user": seller_id,
+        "property_id": property_id,
+        "message": json_data['message'],
+        "created_at": datetime.utcnow()
+    }
+
+    # Insert the message into the database
+    mongo.db.messages.insert_one(message)
+    return jsonify({"message": "Your message has been sent successfully"}), 201
+
+================================================================================
+FILE: app\schemas\property_schema.py
+================================================================================
+
+from flask_marshmallow import Marshmallow
+from marshmallow import fields, validate
+
+ma = Marshmallow()
+
+class PropertySchema(ma.Schema):
+    property_title = fields.Str(required=True, validate=validate.Length(min=5))
+    price = fields.Float(required=True, validate=validate.Range(min=0))
+    location = fields.Str(required=True)
+    property_type = fields.Str(required=True)
+    bedrooms = fields.Int(required=True, validate=validate.Range(min=0))
+    bathrooms = fields.Int(required=True, validate=validate.Range(min=0))
+    area_sqft = fields.Int(required=True, validate=validate.Range(min=1))
+    # These are auto-generated by the backend
+    listing_age = fields.Int(dump_only=True)
+    views = fields.Int(dump_only=True)
+    seller_id = fields.Str(dump_only=True)
+
+================================================================================
+FILE: app\schemas\user_schema.py
+================================================================================
+
+from flask_marshmallow import Marshmallow
+from marshmallow import fields, validate
+
+ma = Marshmallow()
+
+class UserSchema(ma.Schema):
+    username = fields.Str(required=True, validate=validate.Length(min=3, max=50))
+    email = fields.Email(required=True)
+    password = fields.Str(required=True, validate=validate.Length(min=6), load_only=True)
+    role = fields.Str(dump_only=True) # Role is assigned by system, not user input
+
+    # The @validates decorators for username and email have been removed
+    # because the uniqueness checks are now handled in the route.
+
+================================================================================
+FILE: app\utils\decorators.py
+================================================================================
+
+from functools import wraps
+from flask import jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from bson.objectid import ObjectId
+from .. import mongo  # <-- FIX: Import mongo directly from the app package
+
+def role_required(*allowed_roles):
+    """Decorator to require a specific user role to access an endpoint."""
+    def decorator(f):
+        @wraps(f)
+        @jwt_required()
+        def decorated_function(*args, **kwargs):
+            current_user_id = get_jwt_identity()
+            # FIX: Use mongo directly instead of current_app.mongo
+            users_collection = mongo.db.users
+            
+            # Find user by their ID (which is their username in this token strategy)
+            # A better strategy is to store user_id in the token. For now, we use username.
+            user = users_collection.find_one({"username": current_user_id})
+            
+            if not user or user.get('role') not in allowed_roles:
+                return jsonify({"message": "Admin access required"}), 403
+            
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+def property_ownership_required(f):
+    """Decorator to ensure a user can only modify their own properties."""
+    @wraps(f)
+    @jwt_required()
+    def decorated_function(*args, **kwargs):
+        current_user_id = get_jwt_identity()
+        # FIX: Use mongo directly
+        properties_collection = mongo.db.properties
+        property_id = kwargs.get('id')
+        
+        if not property_id:
+            return jsonify({"message": "Property ID is required"}), 400
+
+        try:
+            # FIX: Use mongo directly
+            property_obj = properties_collection.find_one({"_id": ObjectId(property_id)})
+        except:
+            return jsonify({"message": "Invalid property ID format"}), 400
+
+        if not property_obj:
+            return jsonify({"message": "Property not found"}), 404
+
+        # Check if the logged-in user is the seller or an admin
+        # FIX: Use mongo directly
+        users_collection = mongo.db.users
+        user = users_collection.find_one({"username": current_user_id})
+        is_admin = user and user.get('role') == 'admin'
+        is_owner = property_obj.get('seller_id') == current_user_id
+
+        if not (is_owner or is_admin):
+            return jsonify({"message": "You do not have permission to modify this property"}), 403
+            
+        return f(*args, **kwargs)
+    return decorated_function
+
+================================================================================
+FILE: app\utils\helpers.py
+================================================================================
+
+import bcrypt
+
+def hash_password(password):
+    """Hashes a password using bcrypt."""
+    pwhash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    return pwhash.decode('utf-8')
+
+def check_password(password, hashed_password):
+    """Checks a password against a bcrypt hash."""
+    return bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
+
+================================================================================
+FILE: config\config.py
+================================================================================
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+class Config:
+    """Base configuration."""
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'a-very-secret-key'
+    MONGO_URI = os.environ.get('MONGO_URI') or "mongodb://localhost:27017/real_estate_db"
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'fallback-jwt-secret-key'
+    JWT_ACCESS_TOKEN_EXPIRES = int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRES', 3600))
+
+class DevelopmentConfig(Config):
+    """Development configuration."""
+    DEBUG = True
+
+class TestingConfig(Config):
+    """Testing configuration."""
+    TESTING = True
+    MONGO_URI = os.environ.get('MONGO_TEST_URI') or "mongodb://localhost:27017/real_estate_test_db"
+
+class ProductionConfig(Config):
+    """Production configuration."""
+    DEBUG = False
+
+config_by_name = {
+    'development': DevelopmentConfig,
+    'testing': TestingConfig,
+    'production': ProductionConfig
+}
+
+================================================================================
+FILE: static\swagger.json
+================================================================================
+
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Real Estate API",
+    "description": "A robust and scalable RESTful API backend for a real estate marketplace. Endpoints are grouped by user role."
+  },
+  "tags": [
+    {
+      "name": "Guests",
+      "description": "Operations available to anyone without an account."
+    },
+    {
+      "name": "Buyers & Renters",
+      "description": "Operations for authenticated users who are primarily browsing and saving properties."
+    },
+    {
+      "name": "Sellers & Agents",
+      "description": "Operations for authenticated users who manage property listings."
+    },
+    {
+      "name": "Administrators",
+      "description": "Operations for site administrators to manage users and content."
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Guests"],
+        "summary": "Register a new user",
+        "description": "Creates a new user account. The new user will have the 'buyer' role by default.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {"type": "string", "example": "jane_doe"},
+                  "email": {"type": "string", "format": "email", "example": "jane@example.com"},
+                  "password": {"type": "string", "example": "a_strong_password"}
+                },
+                "required": ["username", "email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "User created successfully"},
+          "400": {"description": "Bad Request or username/email already exists"}
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Guests"],
+        "summary": "Log in a user",
+        "description": "Authenticates a user and returns a JWT access token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {"type": "string", "example": "jane_doe"},
+                  "password": {"type": "string", "example": "a_strong_password"}
+                },
+                "required": ["username", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {"type": "string", "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."}
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Invalid credentials"}
+        }
+      }
+    },
+    "/properties": {
+      "get": {
+        "tags": ["Guests"],
+        "summary": "Browse all properties",
+        "description": "Retrieves a paginated list of all properties with optional filtering.",
+        "parameters": [
+          {"name": "page", "in": "query", "schema": {"type": "integer", "default": 1}, "example": 1},
+          {"name": "per_page", "in": "query", "schema": {"type": "integer", "default": 10}, "example": 10},
+          {"name": "location", "in": "query", "schema": {"type": "string"}, "example": "New York"},
+          {"name": "property_type", "in": "query", "schema": {"type": "string"}, "example": "apartment"},
+          {"name": "min_price", "in": "query", "schema": {"type": "number"}, "example": 100000},
+          {"name": "max_price", "in": "query", "schema": {"type": "number"}, "example": 500000}
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of properties",
+            "content": {"application/json": {"schema": {"type": "object"}}}
+          }
+        }
+      },
+      "post": {
+        "tags": ["Sellers & Agents"],
+        "summary": "Create a new property listing",
+        "description": "Adds a new property to the database. Requires 'seller' or 'agent' role.",
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "property_title": {"type": "string", "example": "Modern Downtown Apartment"},
+                  "price": {"type": "number", "example": 550000},
+                  "location": {"type": "string", "example": "New York, NY"},
+                  "property_type": {"type": "string", "example": "apartment"},
+                  "bedrooms": {"type": "integer", "example": 2},
+                  "bathrooms": {"type": "integer", "example": 2},
+                  "area_sqft": {"type": "integer", "example": 1200}
+                },
+                "required": ["property_title", "price", "location", "property_type", "bedrooms", "bathrooms", "area_sqft"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "Property created successfully"},
+          "401": {"description": "Unauthorized - No token provided"},
+          "403": {"description": "Forbidden - User does not have the required role"}
+        }
+      }
+    },
+    "/properties/{property_id}": {
+      "get": {
+        "tags": ["Guests"],
+        "summary": "Get a single property by ID",
+        "description": "Retrieves the details of a specific property. This call also increments the property's view count.",
+        "parameters": [
+          {"name": "property_id", "in": "path", "required": true, "schema": {"type": "string"}, "example": "507f1f77bcf86cd799439011"}
+        ],
+        "responses": {
+          "200": {"description": "Property details"},
+          "404": {"description": "Property not found"}
+        }
+      },
+      "put": {
+        "tags": ["Sellers & Agents"],
+        "summary": "Update a property listing",
+        "description": "Updates the details of a property. Only the original seller/agent or an admin can update it.",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "property_id", "in": "path", "required": true, "schema": {"type": "string"}}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "price": {"type": "number", "example": 575000},
+                  "property_title": {"type": "string", "example": "Updated Apartment Title"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Property updated successfully"},
+          "401": {"description": "Unauthorized"},
+          "403": {"description": "Forbidden - Not the owner"},
+          "404": {"description": "Property not found"}
+        }
+      },
+      "delete": {
+        "tags": ["Sellers & Agents"],
+        "summary": "Delete a property listing",
+        "description": "Removes a property from the database. Only the original seller/agent or an admin can delete it.",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "property_id", "in": "path", "required": true, "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "Property deleted successfully"},
+          "401": {"description": "Unauthorized"},
+          "403": {"description": "Forbidden - Not the owner"},
+          "404": {"description": "Property not found"}
+        }
+      }
+    },
+    "/properties/favorites": {
+      "get": {
+        "tags": ["Buyers & Renters"],
+        "summary": "Get current user's favorite properties",
+        "description": "Retrieves a list of all properties the current user has marked as a favorite.",
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {"description": "A list of favorite properties"}
+        }
+      }
+    },
+    "/properties/favorites/{property_id}": {
+      "post": {
+        "tags": ["Buyers & Renters"],
+        "summary": "Add a property to favorites",
+        "description": "Adds a property to the authenticated user's list of favorites.",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "property_id", "in": "path", "required": true, "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "Property added to favorites"},
+          "400": {"description": "Invalid ID or property already favorited"}
+        }
+      },
+      "delete": {
+        "tags": ["Buyers & Renters"],
+        "summary": "Remove a property from favorites",
+        "description": "Removes a property from the authenticated user's list of favorites.",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "property_id", "in": "path", "required": true, "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "Property removed from favorites"},
+          "400": {"description": "Invalid ID or property not in favorites"}
+        }
+      }
+    },
+    "/properties/{property_id}/contact": {
+      "post": {
+        "tags": ["Buyers & Renters"],
+        "summary": "Send a message to the property's seller",
+        "description": "Sends a message to the user who listed the property. The seller can then view it in their inbox.",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "property_id", "in": "path", "required": true, "schema": {"type": "string"}}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {"type": "string", "example": "Is this property still available?"}
+                },
+                "required": ["message"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "Message sent successfully"},
+          "400": {"description": "Bad Request or trying to contact yourself"}
+        }
+      }
+    },
+    "/auth/profile": {
+      "get": {
+        "tags": ["Buyers & Renters"],
+        "summary": "Get current user's profile",
+        "description": "Retrieves the profile information for the authenticated user.",
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {"description": "User profile data"},
+          "401": {"description": "Unauthorized"}
+        }
+      }
+    },
+    "/auth/delete": {
+      "delete": {
+        "tags": ["Buyers & Renters"],
+        "summary": "Delete current user's account",
+        "description": "Permanently deletes the authenticated user's account and all their associated data (like properties).",
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {"description": "Account deleted successfully"},
+          "401": {"description": "Unauthorized"}
+        }
+      }
+    },
+    "/admin/properties": {
+      "get": {
+        "tags": ["Administrators"],
+        "summary": "Get all properties for admin review",
+        "description": "Retrieves all properties in the system, with optional filters for admin management (e.g., reported properties).",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "status", "in": "query", "schema": {"type": "string", "example": "reported"}},
+          {"name": "seller_id", "in": "query", "schema": {"type": "string", "example": "seller_jane"}}
+        ],
+        "responses": {
+          "200": {"description": "A list of all properties"},
+          "403": {"description": "Forbidden - Admin access required"}
+        }
+      }
+    },
+    "/admin/properties/{property_id}": {
+      "delete": {
+        "tags": ["Administrators"],
+        "summary": "Delete any property",
+        "description": "Allows an admin to delete any property from the system.",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "property_id", "in": "path", "required": true, "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "Property deleted by admin"},
+          "403": {"description": "Forbidden - Admin access required"}
+        }
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "tags": ["Administrators"],
+        "summary": "Get all registered users",
+        "description": "Retrieves a list of all users in the system for management purposes.",
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {"description": "A list of all users"},
+          "403": {"description": "Forbidden - Admin access required"}
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter the token with the `Bearer ` prefix, e.g. 'Bearer eyJhbGciOi...'"
+      }
+    }
+  }
+}
+
+================================================================================
+FILE: tests\conftest.py
+================================================================================
+
+import sys
+import os
+
+# --- PYTHON PATH FIX ---
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(PROJECT_ROOT)
+# --- END: PYTHON PATH FIX ---
+
+import pytest
+from app import create_app, mongo
+from bson.objectid import ObjectId
+
+@pytest.fixture(scope='module')
+def test_client():
+    """
+    A test client for the app.
+    """
+    os.environ['FLASK_ENV'] = 'testing'
+    flask_app = create_app('testing')
+
+    with flask_app.test_client() as testing_client:
+        with flask_app.app_context():
+            yield testing_client
+
+@pytest.fixture(scope='module')
+def init_database(test_client):
+    """
+    Initializes the database with a test user.
+    """
+    # Clear the database before tests
+    mongo.db.users.delete_many({})
+    mongo.db.properties.delete_many({})
+
+    # Step 1: Create a test user with the default role ('buyer')
+    test_user = {
+        "username": "testuser",
+        "email": "test@example.com",
+        "password": "password123"
+        # NOTE: We do NOT include 'role' here because the schema is dump_only
+    }
+    
+    response = test_client.post('/auth/register', json=test_user)
+    assert response.status_code == 201, f"Test user creation failed with status {response.status_code}: {response.json}"
+
+    # Step 2: Manually update the user's role in the database to 'seller' for testing purposes
+    mongo.db.users.update_one(
+        {"username": "testuser"},
+        {"$set": {"role": "seller"}}
+    )
+
+    yield # This is where the testing happens
+
+    # Clean up after tests
+    mongo.db.users.delete_many({})
+    mongo.db.properties.delete_many({})
+
+@pytest.fixture
+def auth_headers(test_client, init_database):
+    """
+    Logs in the test user and returns the authorization headers.
+    """
+    response = test_client.post('/auth/login', json={
+        "username": "testuser",
+        "password": "password123"
+    })
+    
+    assert response.status_code == 200, f"Test user login failed with status {response.status_code}: {response.json}"
+    
+    token = response.json['access_token']
+    return {'Authorization': f'Bearer {token}'}
+
+================================================================================
+FILE: tests\test_auth.py
+================================================================================
+
+def test_register_user(test_client):
+    """
+    GIVEN a Flask application configured for testing
+    WHEN the '/auth/register' endpoint is posted to with valid data
+    THEN check the response is valid and the user is created
+    """
+    response = test_client.post('/auth/register', json={
+        "username": "newuser",
+        "email": "newuser@example.com",
+        "password": "password123"
+    })
+    assert response.status_code == 201
+    assert b"User created successfully!" in response.data
+
+def test_register_duplicate_user(test_client, init_database):
+    """
+    GIVEN a user already exists
+    WHEN the '/auth/register' endpoint is posted to with the same username
+    THEN check the response is a 400 error
+    """
+    response = test_client.post('/auth/register', json={
+        "username": "testuser", # This user is created in init_database
+        "email": "another@example.com",
+        "password": "password123"
+    })
+    assert response.status_code == 400
+    assert b"Username already exists." in response.data
+
+def test_login_valid_user(test_client, init_database):
+    """
+    GIVEN a valid user
+    WHEN the '/auth/login' endpoint is posted to
+    THEN check the response is valid and contains a token
+    """
+    response = test_client.post('/auth/login', json={
+        "username": "testuser",
+        "password": "password123"
+    })
+    assert response.status_code == 200
+    assert "access_token" in response.json
+
+def test_login_invalid_user(test_client):
+    """
+    GIVEN an invalid user
+    WHEN the '/auth/login' endpoint is posted to
+    THEN check the response is a 401 error
+    """
+    response = test_client.post('/auth/login', json={
+        "username": "wronguser",
+        "password": "wrongpassword"
+    })
+    assert response.status_code == 401
+    assert b"Invalid credentials" in response.data
+
+def test_get_profile(test_client, auth_headers):
+    """
+    GIVEN a logged-in user
+    WHEN the '/auth/profile' endpoint is requested with valid headers
+    THEN check the response is valid and contains user data
+    """
+    response = test_client.get('/auth/profile', headers=auth_headers)
+    assert response.status_code == 200
+    assert response.json['username'] == 'testuser'
+    assert 'password' not in response.json
+
+================================================================================
+FILE: tests\test_properties.py
+================================================================================
+
+def test_get_property_by_id(test_client, auth_headers):
+    """
+    GIVEN a property exists
+    WHEN the '/properties/<id>' endpoint is requested
+    THEN check the response is valid and the view count is incremented in the DB
+    """
+    # First, create a property
+    create_res = test_client.post('/properties', json={
+        "property_title": "Another Test Property",
+        "price": 300000,
+        "location": "Another City",
+        "property_type": "villa",
+        "bedrooms": 3,
+        "bathrooms": 2,
+        "area_sqft": 1500
+    }, headers=auth_headers)
+    property_id = create_res.json['_id']
+
+    # Then, get it by ID
+    response = test_client.get(f'/properties/{property_id}')
+    assert response.status_code == 200
+    assert response.json['property_title'] == "Another Test Property"
+    
+    # The API response contains the view count BEFORE the request
+    assert response.json['views'] == 0
+
+    # --- FIX: Verify the view count was incremented in the database ---
+    from app import mongo # Import mongo to query the DB
+    from bson.objectid import ObjectId
+    
+    updated_property = mongo.db.properties.find_one({"_id": ObjectId(property_id)})
+    assert updated_property['views'] == 1
+
