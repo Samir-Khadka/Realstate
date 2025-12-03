@@ -238,6 +238,8 @@
                             onclick="showDashboardTab('my-listings')">My Listings</a></li>
                     <li id="admin-nav" class="hidden"><a href="#" class="nav-link"
                             onclick="showDashboardTab('admin')">Admin Panel</a></li>
+                    <li id="messages-nav"><a href="#" class="nav-link"
+                            onclick="showDashboardTab('messages')">Messages</a></li>
 
                     <!-- Dark Mode Toggle -->
                     <li>
@@ -437,247 +439,258 @@
                 </div>
             </div>
         </div>
-        <!-- ========================================
+
+        <!-- Messages Tab -->
+        <div id="tab-messages" class="dashboard-tab hidden">
+            <div class="container" style="padding: 3rem 1.5rem;">
+                <h1 style="margin-bottom: 2rem;">Messages</h1>
+                <div id="messages-list">
+                    <!-- Messages will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================================
          PROPERTY DETAIL MODAL
          ======================================== -->
-        <div id="property-modal" class="modal">
-            <div class="modal-content" style="max-width: 900px;">
-                <div class="modal-header">
-                    <h2 class="modal-title" id="modal-property-title">Property Details</h2>
-                    <button class="modal-close" onclick="closePropertyModal()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <img id="modal-property-image" src="" alt="Property"
-                        style="width: 100%; height: 400px; object-fit: cover; border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
+    <div id="property-modal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-property-title">Property Details</h2>
+                <button class="modal-close" onclick="closePropertyModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <img id="modal-property-image" src="" alt="Property"
+                    style="width: 100%; height: 400px; object-fit: cover; border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
 
-                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
-                        <div>
-                            <h3 id="modal-property-price" style="color: var(--primary-start); margin-bottom: 1rem;">$0
-                            </h3>
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                    <div>
+                        <h3 id="modal-property-price" style="color: var(--primary-start); margin-bottom: 1rem;">$0
+                        </h3>
 
-                            <div
-                                style="display: flex; gap: 1rem; margin-bottom: 1.5rem; color: var(--text-muted); font-size: 0.875rem;">
-                                <span>📍 <span id="modal-property-location"></span></span>
-                                <span>🏠 <span id="modal-property-type"></span></span>
+                        <div
+                            style="display: flex; gap: 1rem; margin-bottom: 1.5rem; color: var(--text-muted); font-size: 0.875rem;">
+                            <span>📍 <span id="modal-property-location"></span></span>
+                            <span>🏠 <span id="modal-property-type"></span></span>
+                        </div>
+
+                        <div
+                            style="display: flex; gap: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+                            <div>
+                                <strong id="modal-property-bedrooms">0</strong> Bedrooms
                             </div>
-
-                            <div
-                                style="display: flex; gap: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-                                <div>
-                                    <strong id="modal-property-bedrooms">0</strong> Bedrooms
-                                </div>
-                                <div>
-                                    <strong id="modal-property-bathrooms">0</strong> Bathrooms
-                                </div>
-                                <div>
-                                    <strong id="modal-property-area">0</strong> sqft
-                                </div>
+                            <div>
+                                <strong id="modal-property-bathrooms">0</strong> Bathrooms
                             </div>
-
-                            <div style="margin-bottom: 1.5rem;">
-                                <h4>Description</h4>
-                                <p id="modal-property-description" style="color: var(--text-secondary);">Property
-                                    description will appear here.</p>
-                            </div>
-
-                            <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-muted);">
-                                <span>👁️ <span id="modal-property-views">0</span> views</span>
-                                <span>📅 Listed <span id="modal-property-age">0</span> days ago</span>
+                            <div>
+                                <strong id="modal-property-area">0</strong> sqft
                             </div>
                         </div>
 
-                        <div>
-                            <div class="card" style="background: var(--bg-secondary);">
-                                <div class="card-body">
-                                    <h4 style="margin-bottom: 1rem;">Contact Seller</h4>
-                                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">
-                                        Seller: <strong id="modal-property-seller"></strong>
-                                    </p>
+                        <div style="margin-bottom: 1.5rem;">
+                            <h4>Description</h4>
+                            <p id="modal-property-description" style="color: var(--text-secondary);">Property
+                                description will appear here.</p>
+                        </div>
 
-                                    <form id="contact-form" onsubmit="handleContactSeller(event)">
-                                        <div class="form-group">
-                                            <textarea id="contact-message" class="form-control" rows="4"
-                                                placeholder="Enter your message..." required></textarea>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary" style="width: 100%;">Send
-                                            Message</button>
-                                    </form>
-                                </div>
+                        <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-muted);">
+                            <span>👁️ <span id="modal-property-views">0</span> views</span>
+                            <span>📅 Listed <span id="modal-property-age">0</span> days ago</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="card" style="background: var(--bg-secondary);">
+                            <div class="card-body">
+                                <h4 style="margin-bottom: 1rem;">Contact Seller</h4>
+                                <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                                    Seller: <strong id="modal-property-seller"></strong>
+                                </p>
+
+                                <form id="contact-form" onsubmit="handleContactSeller(event)">
+                                    <div class="form-group">
+                                        <textarea id="contact-message" class="form-control" rows="4"
+                                            placeholder="Enter your message..." required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" style="width: 100%;">Send
+                                        Message</button>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- ========================================
+    <!-- ========================================
          ADD/EDIT PROPERTY MODAL
          ======================================== -->
-        <div id="property-form-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title" id="property-form-title">Add New Property</h2>
-                    <button class="modal-close" onclick="closePropertyFormModal()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <form id="property-form" onsubmit="handlePropertySubmit(event)">
-                        <input type="hidden" id="edit-property-id">
-
-                        <div class="form-group">
-                            <label class="form-label">Property Image</label>
-                            <input type="file" id="property-image" class="form-control" accept="image/*">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Property Title</label>
-                            <input type="text" id="property-title" class="form-control"
-                                placeholder="Beautiful 3BR Apartment" required>
-                        </div>
-
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div class="form-group">
-                                <label class="form-label">Price ($)</label>
-                                <input type="number" id="property-price" class="form-control" placeholder="250000"
-                                    required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Property Type</label>
-                                <select id="property-type" class="form-control" required>
-                                    <option value="">Select Type</option>
-                                    <option value="apartment">Apartment</option>
-                                    <option value="villa">Villa</option>
-                                    <option value="house">House</option>
-                                    <option value="commercial">Commercial</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Location</label>
-                            <input type="text" id="property-location" class="form-control"
-                                placeholder="Downtown, City Name" required>
-                        </div>
-
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
-                            <div class="form-group">
-                                <label class="form-label">Bedrooms</label>
-                                <input type="number" id="property-bedrooms" class="form-control" placeholder="3"
-                                    required min="0">
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Bathrooms</label>
-                                <input type="number" id="property-bathrooms" class="form-control" placeholder="2"
-                                    required min="0">
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Area (sqft)</label>
-                                <input type="number" id="property-area" class="form-control" placeholder="1500" required
-                                    min="0">
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                onclick="closePropertyFormModal()">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save Property</button>
-                        </div>
-                    </form>
-                </div>
+    <div id="property-form-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="property-form-title">Add New Property</h2>
+                <button class="modal-close" onclick="closePropertyFormModal()">&times;</button>
             </div>
-        </div>
+            <div class="modal-body">
+                <form id="property-form" onsubmit="handlePropertySubmit(event)">
+                    <input type="hidden" id="edit-property-id">
 
-        <!-- ========================================
-         PROFILE MODAL
-         ======================================== -->
-        <div id="profile-modal" class="modal">
-            <div class="modal-content" style="max-width: 500px;">
-                <div class="modal-header">
-                    <h2 class="modal-title">My Profile</h2>
-                    <button class="modal-close" onclick="closeProfileModal()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div style="text-align: center; margin-bottom: 2rem;">
-                        <div
-                            style="width: 150px; height: 150px; margin: 0 auto 1rem; border-radius: 50%; overflow: hidden; border: 4px solid var(--primary-start);">
-                            <img id="profile-picture-preview"
-                                src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23667eea'/><text x='50' y='60' text-anchor='middle' fill='white' font-size='40' font-family='Arial'>U</text></svg>"
-                                alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-
-                        <input type="file" id="profile-picture-input" accept="image/*" style="display: none;"
-                            onchange="previewProfilePicture(event)">
-                        <button class="btn btn-secondary"
-                            onclick="document.getElementById('profile-picture-input').click()">
-                            📷 Change Picture
-                        </button>
+                    <div class="form-group">
+                        <label class="form-label">Property Image</label>
+                        <input type="file" id="property-image" class="form-control" accept="image/*">
                     </div>
 
-                    <div style="margin-bottom: 1rem;">
-                        <p><strong>Username:</strong> <span id="profile-username"></span></p>
-                        <p><strong>Email:</strong> <span id="profile-email"></span></p>
-                        <p><strong>Role:</strong> <span id="profile-role" style="text-transform: capitalize;"></span>
-                        </p>
+                    <div class="form-group">
+                        <label class="form-label">Property Title</label>
+                        <input type="text" id="property-title" class="form-control"
+                            placeholder="Beautiful 3BR Apartment" required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Price ($)</label>
+                            <input type="number" id="property-price" class="form-control" placeholder="250000" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Property Type</label>
+                            <select id="property-type" class="form-control" required>
+                                <option value="">Select Type</option>
+                                <option value="apartment">Apartment</option>
+                                <option value="villa">Villa</option>
+                                <option value="house">House</option>
+                                <option value="commercial">Commercial</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" id="property-location" class="form-control" placeholder="Downtown, City Name"
+                            required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Bedrooms</label>
+                            <input type="number" id="property-bedrooms" class="form-control" placeholder="3" required
+                                min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Bathrooms</label>
+                            <input type="number" id="property-bathrooms" class="form-control" placeholder="2" required
+                                min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Area (sqft)</label>
+                            <input type="number" id="property-area" class="form-control" placeholder="1500" required
+                                min="0">
+                        </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" onclick="closeProfileModal()">Close</button>
-                        <button class="btn btn-primary" onclick="saveProfilePicture()">Save Changes</button>
+                        <button type="button" class="btn btn-secondary"
+                            onclick="closePropertyFormModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Property</button>
                     </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         PROFILE MODAL
+         ======================================== -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 class="modal-title">My Profile</h2>
+                <button class="modal-close" onclick="closeProfileModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div
+                        style="width: 150px; height: 150px; margin: 0 auto 1rem; border-radius: 50%; overflow: hidden; border: 4px solid var(--primary-start);">
+                        <img id="profile-picture-preview"
+                            src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23667eea'/><text x='50' y='60' text-anchor='middle' fill='white' font-size='40' font-family='Arial'>U</text></svg>"
+                            alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+
+                    <input type="file" id="profile-picture-input" accept="image/*" style="display: none;"
+                        onchange="previewProfilePicture(event)">
+                    <button class="btn btn-secondary"
+                        onclick="document.getElementById('profile-picture-input').click()">
+                        📷 Change Picture
+                    </button>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <p><strong>Username:</strong> <span id="profile-username"></span></p>
+                    <p><strong>Email:</strong> <span id="profile-email"></span></p>
+                    <p><strong>Role:</strong> <span id="profile-role" style="text-transform: capitalize;"></span>
+                    </p>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeProfileModal()">Close</button>
+                    <button class="btn btn-primary" onclick="saveProfilePicture()">Save Changes</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- ========================================
+    <!-- ========================================
          EDIT USER MODAL (Admin)
          ======================================== -->
-        <div id="edit-user-modal" class="modal">
-            <div class="modal-content" style="max-width: 500px;">
-                <div class="modal-header">
-                    <h2 class="modal-title">Edit User</h2>
-                    <button class="modal-close" onclick="closeEditUserModal()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <form id="edit-user-form" onsubmit="saveUserEdits(event)">
-                        <input type="hidden" id="edit-user-username">
+    <div id="edit-user-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit User</h2>
+                <button class="modal-close" onclick="closeEditUserModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-user-form" onsubmit="saveUserEdits(event)">
+                    <input type="hidden" id="edit-user-username">
 
-                        <div class="f form-group">
-                            <label class="form-label">Username</label>
-                            <input type="text" id="edit-user-username-display" class="form-control" disabled>
-                        </div>
+                    <div class="f form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" id="edit-user-username-display" class="form-control" disabled>
+                    </div>
 
-                        <div class="form-group">
-                            <label class="form-label">Email</label>
-                            <input type="email" id="edit-user-email" class="form-control" required>
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="edit-user-email" class="form-control" required>
+                    </div>
 
-                        <div class="form-group">
-                            <label class="form-label">Role</label>
-                            <select id="edit-user-role" class="form-control" required>
-                                <option value="buyer">Buyer</option>
-                                <option value="seller">Seller</option>
-                                <option value="agent">Agent</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label">Role</label>
+                        <select id="edit-user-role" class="form-control" required>
+                            <option value="buyer">Buyer</option>
+                            <option value="seller">Seller</option>
+                            <option value="agent">Agent</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                onclick="closeEditUserModal()">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeEditUserModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <!-- Scripts -->
-        <script src="js/utils.js"></script>
-        <script src="js/app.js"></script>
-        <script src="js/properties.js"></script>
-        <script src="js/admin.js"></script>
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/properties.js"></script>
+    <script src="js/admin.js"></script>
 </body>
 
 </html>

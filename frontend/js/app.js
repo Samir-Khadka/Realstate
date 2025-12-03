@@ -8,6 +8,16 @@ let currentScreen = 'landing-screen';
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
+    // Load saved theme
+    const savedTheme = storage.get('theme') || 'light';
+    document.body.setAttribute('data-theme', savedTheme);
+
+    // Update theme icon if available
+    const themeIcon = document.getElementById('theme-icon');
+    if (themeIcon) {
+        themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+    }
+
     checkAuthStatus();
 });
 
@@ -72,6 +82,9 @@ function showDashboardTab(tabName) {
             break;
         case 'admin':
             loadAdminPanel();
+            break;
+        case 'messages':
+            loadMessages();
             break;
     }
 }
@@ -241,6 +254,10 @@ function loadDashboard() {
         if (adminNav) adminNav.classList.add('hidden');
     }
 
+    // Show messages for everyone (or specific roles)
+    const messagesNav = document.getElementById('messages-nav');
+    if (messagesNav) messagesNav.classList.remove('hidden');
+
     // Update avatar with profile picture
     updateNavigationAvatar();
 
@@ -274,6 +291,47 @@ async function loadDashboardHome() {
     } catch (error) {
         console.error('Error loading dashboard:', error);
         showToast('Failed to load dashboard data', 'error');
+    }
+}
+
+// Load Messages
+async function loadMessages() {
+    try {
+        showLoading('messages-list');
+        const messages = await apiRequest('/messages');
+
+        const container = document.getElementById('messages-list');
+        if (messages.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 3rem; background: var(--bg-secondary); border-radius: var(--radius-md);">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
+                    <h3>No messages yet</h3>
+                    <p style="color: var(--text-secondary);">Messages from interested buyers will appear here.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = messages.map(msg => `
+            <div class="card">
+                <div class="card-body">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <h4 style="margin: 0;">Property: ${msg.property_title || 'Unknown Property'}</h4>
+                        <span style="color: var(--text-muted); font-size: 0.875rem;">${formatDate(msg.created_at)}</span>
+                    </div>
+                    <div style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.875rem;">
+                        From: <strong>${msg.from_user}</strong>
+                    </div>
+                    <p style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--radius-sm); margin: 0;">
+                        ${msg.message}
+                    </p>
+                </div>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error('Error loading messages:', error);
+        showToast('Failed to load messages', 'error');
     }
 }
 

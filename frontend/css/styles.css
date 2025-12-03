@@ -13,18 +13,18 @@
   --primary-start: #667eea;
   --primary-end: #764ba2;
   --primary-gradient: linear-gradient(135deg, var(--primary-start), var(--primary-end));
-  
+
   /* Accent Colors */
   --accent-teal: #38b2ac;
   --accent-purple: #9f7aea;
   --accent-pink: #ed64a6;
-  
+
   /* Semantic Colors */
   --success: #48bb78;
   --warning: #ed8936;
   --error: #f56565;
   --info: #4299e1;
-  
+
   /* Neutral Colors - Light Mode */
   --bg-primary: #ffffff;
   --bg-secondary: #f7fafc;
@@ -37,16 +37,16 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  
+
   /* Glassmorphism */
   --glass-bg: rgba(255, 255, 255, 0.1);
   --glass-border: rgba(255, 255, 255, 0.2);
   --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-  
+
   /* Typography */
   --font-heading: 'Poppins', sans-serif;
   --font-body: 'Inter', sans-serif;
-  
+
   /* Spacing */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
@@ -55,7 +55,7 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
   --spacing-3xl: 4rem;
-  
+
   /* Border Radius */
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
@@ -63,12 +63,12 @@
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
   --radius-full: 9999px;
-  
+
   /* Transitions */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
   --transition-slow: 350ms ease;
-  
+
   /* Z-index */
   --z-dropdown: 1000;
   --z-sticky: 1020;
@@ -98,7 +98,9 @@
 /* =========================================
    RESET & BASE STYLES
    ========================================= */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -121,7 +123,12 @@ body {
 /* =========================================
    TYPOGRAPHY
    ========================================= */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   font-weight: 700;
   line-height: 1.2;
@@ -129,12 +136,29 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: var(--spacing-md);
 }
 
-h1 { font-size: 3rem; }
-h2 { font-size: 2.25rem; }
-h3 { font-size: 1.875rem; }
-h4 { font-size: 1.5rem; }
-h5 { font-size: 1.25rem; }
-h6 { font-size: 1rem; }
+h1 {
+  font-size: 3rem;
+}
+
+h2 {
+  font-size: 2.25rem;
+}
+
+h3 {
+  font-size: 1.875rem;
+}
+
+h4 {
+  font-size: 1.5rem;
+}
+
+h5 {
+  font-size: 1.25rem;
+}
+
+h6 {
+  font-size: 1rem;
+}
 
 p {
   margin-bottom: var(--spacing-md);
@@ -165,9 +189,17 @@ a:hover {
   padding: 0 var(--spacing-lg);
 }
 
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
 
 .flex {
   display: flex;
@@ -198,8 +230,15 @@ a:hover {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* =========================================
@@ -557,6 +596,35 @@ select.form-control {
   margin: var(--spacing-sm) 0;
 }
 
+/* Theme Toggle Button */
+.theme-toggle {
+  background: none;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-full);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-size: 1.25rem;
+}
+
+.theme-toggle:hover {
+  background: var(--bg-secondary);
+  border-color: var(--primary-start);
+  transform: scale(1.1);
+}
+
+.theme-toggle span {
+  transition: transform var(--transition-base);
+}
+
+.theme-toggle:active span {
+  transform: rotate(360deg);
+}
+
 /* =========================================
    HERO SECTION
    ========================================= */
@@ -610,6 +678,7 @@ select.form-control {
     opacity: 0;
     transform: translateY(-30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -621,6 +690,7 @@ select.form-control {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -877,9 +947,17 @@ select.form-control {
   border-left: 4px solid var(--info);
 }
 
-.toast.success { border-left-color: var(--success); }
-.toast.error { border-left-color: var(--error); }
-.toast.warning { border-left-color: var(--warning); }
+.toast.success {
+  border-left-color: var(--success);
+}
+
+.toast.error {
+  border-left-color: var(--error);
+}
+
+.toast.warning {
+  border-left-color: var(--warning);
+}
 
 .toast-content {
   flex: 1;
@@ -911,6 +989,7 @@ select.form-control {
     transform: translateX(100%);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
@@ -931,7 +1010,9 @@ select.form-control {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .skeleton {
@@ -942,8 +1023,13 @@ select.form-control {
 }
 
 @keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .skeleton-card {
@@ -1011,14 +1097,22 @@ select.form-control {
 }
 
 @media (max-width: 768px) {
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.75rem; }
-  h3 { font-size: 1.5rem; }
-  
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
   .hero-title {
     font-size: 2.5rem;
   }
-  
+
   .navbar-nav {
     display: none;
     flex-direction: column;
@@ -1030,27 +1124,27 @@ select.form-control {
     box-shadow: var(--shadow-lg);
     padding: var(--spacing-lg);
   }
-  
+
   .navbar-nav.show {
     display: flex;
   }
-  
+
   .navbar-toggle {
     display: block;
   }
-  
+
   .search-bar {
     grid-template-columns: 1fr;
   }
-  
+
   .property-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .filters-sidebar {
     position: static;
   }
-  
+
   .footer-content {
     grid-template-columns: 1fr;
   }
@@ -1060,20 +1154,20 @@ select.form-control {
   :root {
     font-size: 14px;
   }
-  
+
   .hero-title {
     font-size: 2rem;
   }
-  
+
   .modal-content {
     width: 95%;
   }
-  
+
   .toast-container {
     left: var(--spacing-md);
     right: var(--spacing-md);
   }
-  
+
   .toast {
     min-width: auto;
   }
